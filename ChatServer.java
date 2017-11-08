@@ -5,7 +5,8 @@ public class ChatServer implements Runnable
 {  private ChatServerThread clients[] = new ChatServerThread[50];
    private ServerSocket server = null;
    private Thread       thread = null;
-   private int clientCount = 0;
+   private int          clientCount = 0;
+   private String name = "WTF";
 
    public ChatServer(int port)
    {  try
@@ -49,7 +50,9 @@ public class ChatServer implements Runnable
          remove(ID); }
       else
          for (int i = 0; i < clientCount; i++)
-            clients[i].send(ID + ": " + input);   
+            clients[i].send(input);
+         //to be displayed in the console
+         //input now contains name of sender + message
    }
    public synchronized void remove(int ID)
    {  int pos = findClient(ID);
@@ -69,6 +72,7 @@ public class ChatServer implements Runnable
    private void addThread(Socket socket)
    {  if (clientCount < clients.length)
       {  System.out.println("Client accepted: " + socket);
+
          clients[clientCount] = new ChatServerThread(this, socket);
          try
          {  clients[clientCount].open(); 

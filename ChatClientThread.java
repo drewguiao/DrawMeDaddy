@@ -5,10 +5,12 @@ public class ChatClientThread extends Thread
 {  private Socket           socket   = null;
    private ChatClient       client   = null;
    private DataInputStream  streamIn = null;
-
-   public ChatClientThread(ChatClient _client, Socket _socket)
+   private String           name     = null;
+   
+   public ChatClientThread(ChatClient _client, Socket _socket, String name)
    {  client   = _client;
       socket   = _socket;
+      this.name = name;
       open();  
       start();
    }

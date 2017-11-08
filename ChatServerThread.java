@@ -5,8 +5,17 @@ public class ChatServerThread extends Thread
 {  private ChatServer       server    = null;
    private Socket           socket    = null;
    private int              ID        = -1;
+   private String           name      = null;
    private DataInputStream  streamIn  =  null;
    private DataOutputStream streamOut = null;
+
+   public ChatServerThread(ChatServer _server, Socket _socket, String name)
+   {  super();
+      server = _server;
+      socket = _socket;
+      ID     = socket.getPort();
+      this.name = name;
+   }
 
    public ChatServerThread(ChatServer _server, Socket _socket)
    {  super();
@@ -14,13 +23,15 @@ public class ChatServerThread extends Thread
       socket = _socket;
       ID     = socket.getPort();
    }
+
+
    public void send(String msg)
    {   try
        {  streamOut.writeUTF(msg);
           streamOut.flush();
        }
        catch(IOException ioe)
-       {  System.out.println(ID + " ERROR sending: " + ioe.getMessage());
+       {  System.out.println(name + " ERROR sending: " + ioe.getMessage());
           server.remove(ID);
           stop();
        }
@@ -28,6 +39,7 @@ public class ChatServerThread extends Thread
    public int getID()
    {  return ID;
    }
+
    public void run()
    {  System.out.println("Server Thread " + ID + " running.");
       while (true)
