@@ -44,9 +44,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    public void run()
    {  while (thread != null)
       {  try
-         {  streamOut.writeUTF(console.readLine());
-            msg = console.readLine();
-            streamOut.flush();
+         {  
             if(lineCnt == 0){
                Frame frame =new Frame("Chat Console");
                frame.setLayout(new FlowLayout());
@@ -59,11 +57,12 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
                inputField = new TextField(35);
          
                //text area
+               
+            
                chatArea = new TextArea(30,40);
                chatArea.setEditable(false);
          
                //add all components to frame
-               chatArea.append(msg);
                frame.add(chatArea);
                frame.add(inputField);
                frame.add(sendButton);
@@ -75,11 +74,9 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
                frame.setVisible(true);
                frame.validate();
                lineCnt++;
-            } else {
-               chatArea.append(msg);
             }
          }
-         catch(IOException ioe)
+         catch(Exception ioe)
          {  System.out.println("Sending error: " + ioe.getMessage());
             stop();
          }
@@ -131,11 +128,18 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    
    public void actionPerformed(ActionEvent ae){
      //get the message from the text field and put to chat area
-     String text =  inputField.getText(); 
-     chatArea.append(text);
-     chatArea.append("\n");
-     //clear the textfield
-     inputField.setText("");
+     try{
+
+      streamOut.writeUTF(inputField.getText());
+      streamOut.flush();
+      String text =  inputField.getText(); 
+          chatArea.append(text);
+          chatArea.append("\n");
+          //clear the textfield
+          inputField.setText("");
+       }catch(Exception IO){
+         System.out.println("");
+       }
    }
 
 }
