@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
@@ -16,13 +17,15 @@ import java.awt.event.MouseEvent;
 public class ChatClient extends JFrame implements Runnable, ActionListener{
 
    //declarations
-   private Button sendButton;
-   private TextArea chatArea;
-   private TextField inputField;
+   private static Button sendButton;
+   private static TextArea chatArea;
+   private static TextField inputField;
+   private static String msg;
+   private Integer lineCnt = 0;
 
    private Socket socket              = null;
    private Thread thread              = null;
-   private DataInputStream  console   = null;
+   private static DataInputStream  console   = null;
    private DataOutputStream streamOut = null;
    private ChatClientThread client    = null;
 
@@ -42,7 +45,39 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    {  while (thread != null)
       {  try
          {  streamOut.writeUTF(console.readLine());
+            msg = console.readLine();
             streamOut.flush();
+            if(lineCnt == 0){
+               Frame frame =new Frame("Chat Console");
+               frame.setLayout(new FlowLayout());
+         
+               //send button
+               sendButton = new Button("Send");
+               sendButton.addActionListener(this);
+         
+               //text field
+               inputField = new TextField(35);
+         
+               //text area
+               chatArea = new TextArea(30,40);
+               chatArea.setEditable(false);
+         
+               //add all components to frame
+               chatArea.append(msg);
+               frame.add(chatArea);
+               frame.add(inputField);
+               frame.add(sendButton);
+         
+               //display
+               setFont(new Font("Arial",Font.BOLD,20));
+               frame.setSize(400,550);//set the size
+               frame.setLocation(200,300);//set the location
+               frame.setVisible(true);
+               frame.validate();
+               lineCnt++;
+            } else {
+               chatArea.append(msg);
+            }
          }
          catch(IOException ioe)
          {  System.out.println("Sending error: " + ioe.getMessage());
@@ -65,6 +100,8 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
       {  client = new ChatClientThread(this, socket);
          thread = new Thread(this);                   
          thread.start();
+
+
       }
    }
    public void stop()
@@ -91,35 +128,6 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    }
 
    //UI PART
-   public void DrawMeDaddyGUI(){
-      //header
-      Frame frame =new Frame("Chat Console");
-      frame.setLayout(new FlowLayout());
-
-      //send button
-      sendButton = new Button("Send");
-      sendButton.addActionListener(this);
-
-      //text field
-      inputField = new TextField(35);
-
-      //text area
-      chatArea = new TextArea(30,40);
-      chatArea.setEditable(false);
-
-      //add all components to frame
-      frame.add(chatArea);
-      frame.add(inputField);
-      frame.add(sendButton);
-
-      //display
-      setFont(new Font("Arial",Font.BOLD,20));
-      //frame.setSize(400,550);//set the size
-      frame.setSize(400,550);
-      frame.setLocation(200,300);//set the location
-      frame.setVisible(true);
-      frame.validate();
-   }
    
    public void actionPerformed(ActionEvent ae){
      //get the message from the text field and put to chat area
