@@ -14,8 +14,36 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ChatClient extends JFrame implements Runnable, ActionListener{
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+public class ChatClient extends JFrame implements Runnable, ActionListener{
+   
+   JButton clearButton, toRedButton, toBlackButton, smallButton, mediumButton, largeButton;
+   DrawingArea drawingArea;
+   ActionListener actionListener = new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         if(e.getSource() == clearButton){
+            drawingArea.clear();
+         }else if(e.getSource() == toBlackButton){
+            drawingArea.setBrushToBlack();
+         }else if(e.getSource() == toRedButton){
+            drawingArea.setBrushToRed();
+         }else if(e.getSource() == smallButton){
+            drawingArea.setBrushSmall();
+         }else if(e.getSource() == mediumButton){
+            drawingArea.setBrushMedium();
+         }else if(e.getSource() == largeButton){
+            drawingArea.setBrushLarge();
+         }
+         
+      }
+   };
    //declarations
    private static Button sendButton;
    private static TextArea chatArea;
@@ -46,17 +74,53 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
       {  try
          {  
             if(lineCnt == 0){
-               Frame frame =new Frame("Chat Console");
-               frame.setLayout(new FlowLayout());
+              JFrame drawingFrame = new JFrame("DrawMeDaddy");
+              Container content = drawingFrame.getContentPane();
+              content.setLayout(new BorderLayout());
+              
+              drawingArea = new DrawingArea();
+              content.add(drawingArea, BorderLayout.CENTER);
+              
+              JPanel controlPanel = new JPanel();
+              JPanel wordPanel = new JPanel();
+              JLabel wordLabel = new JLabel("GUESS ME");
+              wordPanel.add(wordLabel);
+              //Area Functions
+              clearButton = new JButton("Clear");
+
+              //Brush Color
+              toRedButton = new JButton("Red");
+              toBlackButton = new JButton("Black");
+              
+              //Brush Sizes
+              smallButton = new JButton("S");
+              mediumButton = new JButton("M");
+              largeButton = new JButton("L");
+              
+              clearButton.addActionListener(actionListener);
+              toRedButton.addActionListener(actionListener);
+              toBlackButton.addActionListener(actionListener);
+              smallButton.addActionListener(actionListener);
+              mediumButton.addActionListener(actionListener);
+              largeButton.addActionListener(actionListener);
+              
+              controlPanel.add(clearButton);
+              controlPanel.add(toRedButton);
+              controlPanel.add(toBlackButton);
+              controlPanel.add(smallButton);
+              controlPanel.add(mediumButton);
+              controlPanel.add(largeButton);
+              
+              content.add(controlPanel,BorderLayout.NORTH);
+              
+              content.add(wordPanel,BorderLayout.SOUTH);
+              JPanel chatBox = new JPanel();
+              chatBox.setLayout(new BorderLayout());
+              sendButton = new Button("Send");
+              sendButton.addActionListener(this);
          
-               //send button
-               sendButton = new Button("Send");
-               sendButton.addActionListener(this);
-         
-               //text field
-               inputField = new TextField(35);
-               //text area
-               inputField.addKeyListener(new KeyListener(){
+              inputField = new TextField(35);
+              inputField.addKeyListener(new KeyListener(){
                   @Override
                   public void keyTyped(KeyEvent e){
 
@@ -80,22 +144,17 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
                      
                   } 
                });
-               
-               chatArea = new TextArea(30,40);
-               chatArea.setEditable(false);
-         
-               //add all components to frame
-               frame.add(chatArea);
-               frame.add(inputField);
-               frame.add(sendButton);
-         
-               //display
-               setFont(new Font("Arial",Font.BOLD,20));
-               frame.setSize(400,550);//set the size
-               frame.setLocation(200,300);//set the location
-               frame.setVisible(true);
-               frame.validate();
-               lineCnt++;
+              chatArea = new TextArea(30,40);
+              chatArea.setEditable(false);
+      
+              chatBox.add(chatArea, BorderLayout.NORTH);
+              chatBox.add(inputField, BorderLayout.CENTER);
+              chatBox.add(sendButton, BorderLayout.EAST);
+              content.add(chatBox,BorderLayout.EAST);
+              drawingFrame.setSize(800,800);
+              drawingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+              drawingFrame.setVisible(true);
+              lineCnt++;
             }
          }
          catch(Exception ioe)
