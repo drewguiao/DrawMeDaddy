@@ -5,6 +5,7 @@ public class ChatServerThread extends Thread
 {  private ChatServer       server    = null;
    private Socket           socket    = null;
    private int              ID        = -1;
+   private String           ipAddress = null;
    private DataInputStream  streamIn  =  null;
    private DataOutputStream streamOut = null;
 
@@ -13,6 +14,7 @@ public class ChatServerThread extends Thread
       server = _server;
       socket = _socket;
       ID     = socket.getPort();
+      ipAddress = socket.getInetAddress().getHostAddress();
    }
    public void send(String msg)
    {   try
@@ -28,11 +30,16 @@ public class ChatServerThread extends Thread
    public int getID()
    {  return ID;
    }
+
+   public String getIPAddress(){
+      return ipAddress;
+
+   }
    public void run()
    {  System.out.println("Server Thread " + ID + " running.");
       while (true)
       {  try
-         {  server.handle(ID, streamIn.readUTF());
+         {  server.handle(ipAddress,ID, streamIn.readUTF());
          }
          catch(IOException ioe)
          {  System.out.println(ID + " ERROR reading: " + ioe.getMessage());

@@ -43,13 +43,13 @@ public class ChatServer implements Runnable
             return i;
       return -1;
    }
-   public synchronized void handle(int ID, String input)
+   public synchronized void handle(String ipAddress, int ID, String input)
    {  if (input.equals(".bye"))
       {  clients[findClient(ID)].send(".bye");
          remove(ID); }
       else
          for (int i = 0; i < clientCount; i++)
-            clients[i].send(ID + ": " + input);   
+            clients[i].send(ipAddress + "/"+ID+": " + input);   
    }
    public synchronized void remove(int ID)
    {  int pos = findClient(ID);
