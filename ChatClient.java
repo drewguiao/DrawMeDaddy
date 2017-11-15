@@ -68,11 +68,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
                         try{
                            streamOut.writeUTF(inputField.getText());
                            streamOut.flush();
-                           String text =  inputField.getText(); 
-                               chatArea.append(text);
-                               chatArea.append("\n");
-                               //clear the textfield
-                               inputField.setText("");
+                           inputField.setText("");
                             }catch(Exception IO){
                               System.out.println("");
                             }
@@ -114,7 +110,9 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
          stop();
       }
       else
-         System.out.println(msg);
+        System.out.println(msg);
+        chatArea.append(msg);
+        chatArea.append("\n");
    }
    public void start() throws IOException
    {  console   = new DataInputStream(System.in);
@@ -158,15 +156,12 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
 
       streamOut.writeUTF(inputField.getText());
       streamOut.flush();
-      String text =  inputField.getText(); 
-          chatArea.append(text);
-          chatArea.append("\n");
-          //clear the textfield
-          inputField.setText("");
+      inputField.setText("");
        }catch(Exception IO){
          System.out.println("");
        }
    }
+
    public void keyTyped(KeyEvent e){
 
    }
