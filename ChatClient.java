@@ -7,9 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -55,10 +55,36 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
          
                //text field
                inputField = new TextField(35);
-         
                //text area
+               inputField.addKeyListener(new KeyListener(){
+                  @Override
+                  public void keyTyped(KeyEvent e){
+
+                  }
+
+                  @Override
+                  public void keyPressed(KeyEvent e){
+                     if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                        try{
+                           streamOut.writeUTF(inputField.getText());
+                           streamOut.flush();
+                           String text =  inputField.getText(); 
+                               chatArea.append(text);
+                               chatArea.append("\n");
+                               //clear the textfield
+                               inputField.setText("");
+                            }catch(Exception IO){
+                              System.out.println("");
+                            }
+                     }
+                  }
+
+                  @Override
+                  public void keyReleased(KeyEvent e){
+                     
+                  } 
+               });
                
-            
                chatArea = new TextArea(30,40);
                chatArea.setEditable(false);
          
@@ -140,6 +166,12 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
        }catch(Exception IO){
          System.out.println("");
        }
+   }
+   public void keyTyped(KeyEvent e){
+
+   }
+   public void keyReleased(KeyEvent e){
+
    }
 
 }
