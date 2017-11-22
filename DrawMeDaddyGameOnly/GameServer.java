@@ -8,6 +8,7 @@ import java.util.Iterator;
 public class GameServer implements Runnable, Constants{
 	private int portNumber;
 	private int playerCount = 0;
+	private int playerLimit;
 	private int gameStatus = WAITING_FOR_PLAYERS;
 	private String playerData;
 	private Thread t = new Thread(this);
@@ -15,9 +16,10 @@ public class GameServer implements Runnable, Constants{
 	private GameState game;
 	
 	
-	public GameServer(int portNumber) {
+	public GameServer(int portNumber, int playerLimit) {
 		// TODO Auto-generated constructor stub
 		this.portNumber = portNumber;
+		this.playerLimit = playerLimit;
 		try{
 			serverSocket = new DatagramSocket(portNumber);
 			serverSocket.setSoTimeout(100);
@@ -77,7 +79,7 @@ public class GameServer implements Runnable, Constants{
 						broadcast("CONNECTED "+tokens[1]);
 						// change limit
 						playerCount++;
-						if(playerCount == 2){
+						if(playerCount == playerLimit){
 							gameStatus=GAME_START;
 						}
 					}
@@ -88,6 +90,9 @@ public class GameServer implements Runnable, Constants{
 					gameStatus = IN_PROGRESS;
 					break;
 				case IN_PROGRESS:
+					//select word from bag of words
+					//display to user
+
 					if(playerData.startsWith("PLAYER")){
 						
 						String[] playerInfo = playerData.split(" ");
@@ -125,10 +130,10 @@ public class GameServer implements Runnable, Constants{
 		
 	}
 	public static void main(String args[]){
-		if(args.length != 1){
-			System.out.println("Usage: java GameServer <port number>");
+		if(args.length != 2){
+			System.out.println("Usage: java GameServer <port number> <number of players>");
 			System.exit(1);
 		}
-		new GameServer(Integer.parseInt(args[0]));
+		new GameServer(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
 	}
 }
