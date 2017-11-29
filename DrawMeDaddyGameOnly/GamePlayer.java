@@ -9,6 +9,7 @@ public class GamePlayer {
 	private int x,y,newX,newY;
 	private float brushSize;
 	private Color brushColor;
+	private int Score = 0;
 	
 	public GamePlayer(String name, InetAddress address, int port){
 		this.address = address;
