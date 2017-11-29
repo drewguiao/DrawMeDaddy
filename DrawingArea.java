@@ -9,11 +9,15 @@ import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-
 import javax.swing.JComponent;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
 
 
 public class DrawingArea extends JComponent{
+
 	private Image image;
 	private Graphics2D graphicsObject;
 	private int currentX, currentY, previousX, previousY;
@@ -26,7 +30,6 @@ public class DrawingArea extends JComponent{
 			public void mousePressed(MouseEvent e) {
 				previousX = e.getX();
 				previousY = e.getY();
-
 				graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 				graphicsObject.drawLine(previousX, previousY, previousX, previousY);
 				
@@ -46,8 +49,7 @@ public class DrawingArea extends JComponent{
 
 					graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 					graphicsObject.drawLine(previousX, previousY, currentX, currentY);
-					
-//					graphicsObject.fillOval(currentX, currentY, brushSize, brushSize);
+					// graphicsObject.fillOval(currentX, currentY, brushSize, brushSize);
 					repaint();
 					previousX = currentX;
 					previousY = currentY;
@@ -99,4 +101,5 @@ public class DrawingArea extends JComponent{
 	public void setBrushLarge(){
 		brushSize = 10.0f;
 	}
+
 }
