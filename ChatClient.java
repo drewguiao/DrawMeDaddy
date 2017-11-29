@@ -5,6 +5,7 @@ import java.net.*;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import java.awt.Dimension;
 import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
@@ -46,7 +47,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    };
    //declarations
    private static Button sendButton;
-   private static TextArea chatArea;
+   private static JTextArea chatArea;
    private static TextField inputField;
    private static String msg;
    private Integer lineCnt = 0;
@@ -144,7 +145,9 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
                      
                   } 
                });
-              chatArea = new TextArea(30,40);
+              chatArea = new JTextArea(30,40);
+              chatArea.setLineWrap(true);
+              displayInstructions();
               chatArea.setEditable(false);
       
               chatBox.add(chatArea, BorderLayout.NORTH);
@@ -184,6 +187,7 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
 
       }
    }
+   @SuppressWarnings("deprecation")
    public void stop()
    {  if (thread != null)
       {  thread.stop();  
@@ -227,5 +231,20 @@ public class ChatClient extends JFrame implements Runnable, ActionListener{
    public void keyReleased(KeyEvent e){
 
    }
+
+
+   private void displayInstructions(){
+    this.chatArea.append(retrieveInstructions());
+   }
+
+   private String retrieveInstructions(){
+      String instructions = "Players must guess the secret word based on the drawings that "
+        + "the artist performs. With every turn, the word would be different and you have "
+        + "80 seconds to guess it right. Points earned will depend on the time it took "
+        + "you to guess. Good luck!\n";
+    
+    return instructions;
+   }
+
 
 }
