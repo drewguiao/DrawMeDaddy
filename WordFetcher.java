@@ -24,19 +24,26 @@ public class WordFetcher {
 	public String fetch(){
 		int bagSize = bagOfWords.size();
 		int cacheSize = cache.size();
-		int index = randomizer.nextInt(bagSize);
-		
-		String word = bagOfWords.get(index);
+
+		String word = getRandomWord();
 		
 		while(cache.contains(word)){
 			if(cacheSize == bagSize){
 				cache.clear();
 			}
-			index = randomizer.nextInt(bagSize);
-			word = bagOfWords.get(index);
+			word = getRandomWord();
 		}
 		
 		cache.add(word);
 		
 		return word;
 	}
+
+	public String getRandomWord(){
+		int bagSize = bagOfWords.size();
+		int index = randomizer.nextInt(bagSize);
+		String word = bagOfWords.get(index);
+
+		return word;
+	}
+}
