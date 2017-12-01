@@ -58,9 +58,10 @@ public class DaddyGUI {
 		chatArea = new JTextArea(40,30);
 		chatArea.setEditable(false);
 		chatArea.setLineWrap(true);
-		
+		chatArea.setBackground(Color.black);
+		chatArea.setForeground(Color.white);
 		displayInstructions();
-		
+
 		chatPanel.add(inputField,BorderLayout.CENTER);
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
