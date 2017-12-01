@@ -8,9 +8,11 @@ public class ChatServerThread extends Thread
    private String           ipAddress = null;
    private DataInputStream  streamIn  =  null;
    private DataOutputStream streamOut = null;
+   private GameServerThread gServer = null;
 
-   public ChatServerThread(GameServer _server, Socket _socket)
+   public ChatServerThread(GameServer _server, GameServerThread gServer, Socket _socket)
    {  super();
+      this.gServer = gServer;
       server = _server;
       socket = _socket;
       ID     = socket.getPort();
@@ -38,8 +40,12 @@ public class ChatServerThread extends Thread
    public void run()
    {  System.out.println("Server Thread " + ID + " running.");
       while (true)
-      {  try
-         {  server.handle(ipAddress,ID, streamIn.readUTF());
+      {  
+
+
+        try{ 
+          
+          server.handle(ipAddress,ID, streamIn.readUTF());
          }
          catch(IOException ioe)
          {  System.out.println(ID + " ERROR reading: " + ioe.getMessage());

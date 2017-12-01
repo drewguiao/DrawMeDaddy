@@ -24,7 +24,7 @@ public class GameServer implements Runnable,Constants
    public GameServer(int port, int limit)
    
    {  
-   	 this.clients = new ChatServerThread[limit];
+   	this.clients = new ChatServerThread[limit];
 	   this.portNumber = port;
 	   this.playerLimit = limit;
 	   
@@ -61,7 +61,7 @@ public class GameServer implements Runnable,Constants
 public void start()
    {  if (thread == null)
       {  thread = new Thread(this);
-      	 gServer = new GameServerThread(this,portNumber);
+      	 gServer = new GameServerThread(this,portNumber,playerLimit);
          thread.start();
       }
    }
@@ -135,7 +135,7 @@ public void start()
    private void addThread(Socket socket)
    {  if (clientCount < clients.length)
       {  System.out.println("Client accepted: " + socket);
-         clients[clientCount] = new ChatServerThread(this, socket);
+         clients[clientCount] = new ChatServerThread(this, gServer, socket);
          try
          {  clients[clientCount].open(); 
             clients[clientCount].start();  
