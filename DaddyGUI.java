@@ -59,6 +59,8 @@ public class DaddyGUI {
 		chatArea.setEditable(false);
 		chatArea.setLineWrap(true);
 		
+		displayInstructions();
+		
 		chatPanel.add(inputField,BorderLayout.CENTER);
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
@@ -111,6 +113,16 @@ public class DaddyGUI {
 		return actionPerformed;
 	}
 	
+	private void displayInstructions(){
+		String instructions = "Players must guess the secret word based on the drawings that "
+        + "the artist performs. With every turn, the word would be different and you have "
+        + "80 seconds to guess it right. Points earned will depend on the time it took "
+        + "you to guess. Good luck!\n";
+    
+		this.chatArea.append(instructions);
+
+	}
+
 	private void clearField(){
 		inputField.setText("");
 	}
