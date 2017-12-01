@@ -21,8 +21,8 @@ public class DaddyGUI {
 	private Container content;
 	private DrawingArea2 drawingArea;
 	private JTextField inputField;
-	private JButton sendButton;
-	private JPanel chatPanel;
+	private JButton sendButton,clearButton;
+	private JPanel chatPanel,controlPanel;
 	private JTextArea chatArea;
 	//	private ChatArea chatArea;
 	private String playerName;
@@ -37,10 +37,17 @@ public class DaddyGUI {
 		content = frame.getContentPane();
 		content.setLayout(new BorderLayout());
 		
+
+		// Control Panel
+		controlPanel = new JPanel();
+		clearButton = new JButton("Clear");
+		clearButton.addActionListener(clearAreaViaButton());
+		controlPanel.add(clearButton);
+
+		// Chat Panel
 		chatPanel = new JPanel();
 		chatPanel.setLayout(new BorderLayout());
 		drawingArea = new DrawingArea2(this.client);
-		
 		
 		inputField = new JTextField(10);
 		inputField.addKeyListener(sendViaEnter());
@@ -56,18 +63,30 @@ public class DaddyGUI {
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
 		
+		content.add(controlPanel,BorderLayout.NORTH);
 		content.add(chatPanel,BorderLayout.EAST);
 		content.add(drawingArea,BorderLayout.CENTER);
-//		frame.add(content);
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+	}
+
+	private ActionListener clearAreaViaButton(){
+		ActionListener actionPerformed = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				drawingArea.clear();
+				client.sendGameData("PLAYERCLEAR");
+				drawingArea.repaint();
+			}
+		};
+	return actionPerformed;
 	}
 	
 	private ActionListener sendViaButton() {
 		ActionListener actionPerformed = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				client.send
 				client.sendChat();
 				clearField();
 			}

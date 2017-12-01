@@ -77,7 +77,11 @@ public class GameServerThread extends Thread implements Constants{
 		case IN_PROGRESS:
 			//select word from bag of words
 			//display to user
-			if(playerData.startsWith("PLAYER")){
+
+			if(playerData.startsWith("PLAYERCLEAR")){
+				String message = playerData;
+				broadcast(message);
+			}else if(playerData.startsWith("PLAYER")){
 				
 				String[] playerInfo = playerData.split(" ");
 

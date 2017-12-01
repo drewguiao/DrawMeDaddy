@@ -77,7 +77,7 @@ public class DrawingArea2 extends JComponent{
 		return this.graphicsObject;
 	}
 	
-	private void clear() {
+	public void clear() {
 		graphicsObject.setPaint(Color.white);
 		graphicsObject.fillRect(0,0,getSize().width,getSize().height);
 		graphicsObject.setPaint(Color.black);
