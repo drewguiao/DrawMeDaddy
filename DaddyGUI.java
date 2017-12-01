@@ -59,6 +59,7 @@ public class DaddyGUI {
 		content.add(chatPanel,BorderLayout.EAST);
 		content.add(drawingArea,BorderLayout.CENTER);
 //		frame.add(content);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
 	
@@ -101,6 +102,10 @@ public class DaddyGUI {
 	
 	public JTextField getInputField(){
 		return this.inputField;
+	}
+	
+	public DrawingArea2 getDrawingArea(){
+		return this.drawingArea;
 	}
 	
 	public void render() {

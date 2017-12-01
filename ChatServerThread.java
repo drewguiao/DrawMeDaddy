@@ -2,14 +2,14 @@ import java.net.*;
 import java.io.*;
 
 public class ChatServerThread extends Thread
-{  private ChatServer       server    = null;
+{  private GameServer       server    = null;
    private Socket           socket    = null;
    private int              ID        = -1;
    private String           ipAddress = null;
    private DataInputStream  streamIn  =  null;
    private DataOutputStream streamOut = null;
 
-   public ChatServerThread(ChatServer _server, Socket _socket)
+   public ChatServerThread(GameServer _server, Socket _socket)
    {  super();
       server = _server;
       socket = _socket;
