@@ -73,16 +73,68 @@ public class DrawingArea2 extends JComponent{
 		g.drawImage(image,0,0,null);
 	}
 
+	public void eraseDrawing(){
+		graphicsObject.setPaint(Color.white);
+		brushSize = 20.0f;
+		addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				oldX = e.getX();
+				oldY = e.getY();
+				graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+				client.broadCastCoordinates(oldX, oldY);
+				graphicsObject.drawLine(oldX, oldY, oldX, oldY);
+				
+				repaint();
+			}
+		});
+	}
+
 	public Graphics2D getGraphicsObject(){
 		return this.graphicsObject;
 	}
 	
-	private void clear() {
+	public void clear() {
 		graphicsObject.setPaint(Color.white);
 		graphicsObject.fillRect(0,0,getSize().width,getSize().height);
 		graphicsObject.setPaint(Color.black);
 		repaint();
 	}
+
+	public void setBrushToRed(){
+		graphicsObject.setPaint(Color.red);
+	}
+
+	public void setBrushToBlack(){
+		graphicsObject.setPaint(Color.black);
+	}
+
+	public void setBrushToBlue(){
+		graphicsObject.setPaint(Color.blue);
+	}
+
+	public void setBrushToGreen(){
+		graphicsObject.setPaint(Color.green);
+	}
+
+	public void setBrushToYellow(){
+		graphicsObject.setPaint(Color.yellow);
+	}
+	
+	public void setBrushToMagenta(){
+		graphicsObject.setPaint(Color.magenta);
+	}
+
+	//// BRUSH SIZES SETTINGS ////
+
+	public void setBrushSmall(){
+		brushSize = 3.0f;
+	}
+	public void setBrushMedium(){
+		brushSize = 5.0f;
+	}
+	public void setBrushLarge(){
+		brushSize = 10.0f;
+	}	
 	
 	
 }
