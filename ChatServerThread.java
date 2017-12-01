@@ -2,36 +2,27 @@ import java.net.*;
 import java.io.*;
 
 public class ChatServerThread extends Thread
-{  private ChatServer       server    = null;
+{  private GameServer       server    = null;
    private Socket           socket    = null;
    private int              ID        = -1;
-   private String           name      = null;
+   private String           ipAddress = null;
    private DataInputStream  streamIn  =  null;
    private DataOutputStream streamOut = null;
 
-   public ChatServerThread(ChatServer _server, Socket _socket, String name)
+   public ChatServerThread(GameServer _server, Socket _socket)
    {  super();
       server = _server;
       socket = _socket;
       ID     = socket.getPort();
-      this.name = name;
+      ipAddress = socket.getInetAddress().getHostAddress();
    }
-
-   public ChatServerThread(ChatServer _server, Socket _socket)
-   {  super();
-      server = _server;
-      socket = _socket;
-      ID     = socket.getPort();
-   }
-
-
    public void send(String msg)
    {   try
        {  streamOut.writeUTF(msg);
           streamOut.flush();
        }
        catch(IOException ioe)
-       {  System.out.println(name + " ERROR sending: " + ioe.getMessage());
+       {  System.out.println(ID + " ERROR sending: " + ioe.getMessage());
           server.remove(ID);
           stop();
        }
@@ -40,11 +31,15 @@ public class ChatServerThread extends Thread
    {  return ID;
    }
 
+   public String getIPAddress(){
+      return ipAddress;
+
+   }
    public void run()
    {  System.out.println("Server Thread " + ID + " running.");
       while (true)
       {  try
-         {  server.handle(ID, streamIn.readUTF());
+         {  server.handle(ipAddress,ID, streamIn.readUTF());
          }
          catch(IOException ioe)
          {  System.out.println(ID + " ERROR reading: " + ioe.getMessage());
@@ -64,4 +59,5 @@ public class ChatServerThread extends Thread
       if (streamIn != null)  streamIn.close();
       if (streamOut != null) streamOut.close();
    }
+
 }
