@@ -84,5 +84,39 @@ public class DrawingArea2 extends JComponent{
 		repaint();
 	}
 	
+	public void setBrushToRed(){
+		graphicsObject.setPaint(Color.red);
+	}
+
+	public void setBrushToBlack(){
+		graphicsObject.setPaint(Color.black);
+	}
+
+	public void setBrushToBlue(){
+		graphicsObject.setPaint(Color.blue);
+	}
+
+	public void setBrushToGreen(){
+		graphicsObject.setPaint(Color.green);
+	}
+
+	public void setBrushToYellow(){
+		graphicsObject.setPaint(Color.yellow);
+	}
 	
+	public void setBrushToMagenta(){
+		graphicsObject.setPaint(Color.magenta);
+	}
+
+	//// BRUSH SIZES SETTINGS ////
+
+	public void setBrushSmall(){
+		brushSize = 3.0f;
+	}
+	public void setBrushMedium(){
+		brushSize = 5.0f;
+	}
+	public void setBrushLarge(){
+		brushSize = 10.0f;
+	}	
 }
