@@ -11,16 +11,17 @@ public class GameServerThread extends Thread implements Constants{
     
     private int portNumber;
 	private int playerCount = 0;
-	private int playerLimit =2;
+	private int playerLimit;
 	private int gameStatus = WAITING_FOR_PLAYERS;
 	private String playerData;
 	private DatagramSocket serverSocket = null;
 	private GameState game;
 
 
-	public GameServerThread(GameServer gameServer, int portNumber){
+	public GameServerThread(GameServer gameServer, int portNumber, int playerLimit){
 		this.gameServer = gameServer;
 		this.portNumber = portNumber;
+		this.playerLimit = playerLimit;
 		setUpDrawingServer();
 		new Thread(this);
 		start();
@@ -72,13 +73,17 @@ public class GameServerThread extends Thread implements Constants{
 		case GAME_START:
 			System.out.println("game State: Start");
 			broadcast("START");
+			broadcast("PLAYERCLEAR");
 			gameStatus = IN_PROGRESS;
 			break;
 		case IN_PROGRESS:
 			//select word from bag of words
 			//display to user
-			System.out.println(playerData);
-			if(playerData.startsWith("PLAYER")){
+
+			if(playerData.startsWith("PLAYERCLEAR")){
+				String message = playerData;
+				broadcast(message);
+			}else if(playerData.startsWith("PLAYER")){
 				
 				String[] playerInfo = playerData.split(" ");
 
@@ -133,7 +138,9 @@ public class GameServerThread extends Thread implements Constants{
 			send(player,message);
 
 		}
-	
-}
+	}
+	// public void getGameState(){
+	// 	return this.game;
+	// }
 
 }

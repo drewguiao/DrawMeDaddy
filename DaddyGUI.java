@@ -6,13 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.net.Socket;
-
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Dimension;
 import java.awt.Image;
-
+import java.io.IOException;
+import java.net.Socket;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 public class DaddyGUI {
 	private JFrame frame;
@@ -27,13 +27,11 @@ public class DaddyGUI {
 	private Container content;
 	private DrawingArea2 drawingArea;
 	private JTextField inputField;
-	private JButton sendButton;
-	private JPanel chatPanel;
+	private JPanel chatPanel,controlPanel;
 	private JTextArea chatArea;
 	//	private ChatArea chatArea;
 	private String playerName;
-	JButton clearButton, eraseButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
-	
+	private JButton eraseButton, sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
 	
 	public DaddyGUI(GameClient client, String playerName){
 		this.playerName = playerName;
@@ -41,13 +39,14 @@ public class DaddyGUI {
 		this.frame.setSize(800, 800);
 		this.client = client;
 		this.playerName = playerName;
+
+
 		content = frame.getContentPane();
 		content.setLayout(new BorderLayout());
 		
-		chatPanel = new JPanel();
-		chatPanel.setLayout(new BorderLayout());
-		drawingArea = new DrawingArea2(this.client);
-		
+
+		// Control Panel
+		///// BUTTON ICONS ///// 
 		ImageIcon icon = new ImageIcon("icons/red.png");
 	    Image image = icon.getImage(); // transform it 
 	    Image newimg = image.getScaledInstance(20, 20,java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
@@ -78,37 +77,87 @@ public class DaddyGUI {
 	    Image newimg6 = image6.getScaledInstance(20,20,java.awt.Image.SCALE_SMOOTH);
 	    icon6 = new ImageIcon(newimg6);
 
-	     JPanel controlPanel = new JPanel();
+	    ImageIcon smallDot = new ImageIcon("icons/dot.png");
+	    Image smallDotImage = smallDot.getImage();
+	    Image newSmallDot = smallDotImage.getScaledInstance(30,30,java.awt.Image.SCALE_SMOOTH);
+	    smallDot = new ImageIcon(newSmallDot);
+
+	    ImageIcon mediumDot = new ImageIcon("icons/dot.png");
+	    Image mediumDotImage = mediumDot.getImage();
+	    Image newMediumDot = mediumDotImage.getScaledInstance(50,50,java.awt.Image.SCALE_SMOOTH);
+	    mediumDot = new ImageIcon(newMediumDot);
+
+	    ImageIcon largeDot = new ImageIcon("icons/dot.png");
+	    Image largeDotImage = largeDot.getImage();
+	    Image newLargeDot = largeDotImage.getScaledInstance(80,80,java.awt.Image.SCALE_SMOOTH);
+	    largeDot = new ImageIcon(newLargeDot);
+
+	    ImageIcon clearIcon = new ImageIcon("icons/clear.png");
+	    Image clearImage = clearIcon.getImage();
+	    Image newClearIcon = clearImage.getScaledInstance(30,30,java.awt.Image.SCALE_SMOOTH);
+	    clearIcon = new ImageIcon(newClearIcon);
+
+	    ImageIcon eraser = new ImageIcon("icons/erase.png");
+	    Image eraserIcon = eraser.getImage();
+	    Image newEraserIcon = eraserIcon.getScaledInstance(20,20,java.awt.Image.SCALE_SMOOTH);
+	    eraser = new ImageIcon(newEraserIcon);
+
+	    JPanel controlPanel = new JPanel();
 	    JPanel wordPanel = new JPanel();
 	    JLabel wordLabel = new JLabel("GUESS ME");
 	    wordPanel.add(wordLabel);
-	    //Area Functions
-	    clearButton = new JButton("Clear");
-	    eraseButton = new JButton("Erase");
-
-	    //Brush Color
+	    
+		controlPanel = new JPanel();
+		clearButton = new JButton(clearIcon);
+		//Brush Color
 	    toRedButton = new JButton(icon);
 	    toBlackButton = new JButton(icon2);
 	    toBlueButton = new JButton(icon3);
 	    toGreenButton = new JButton(icon4);
 	    toYellowButton = new JButton(icon5);
 	    toMagentaButton = new JButton(icon6);
+	    eraseButton = new JButton(eraser);
 
+
+	    //Adjusting button sizes
 	    toBlackButton.setPreferredSize(new Dimension(20,20));
 	    toRedButton.setPreferredSize(new Dimension(20,20));
 	    toBlueButton.setPreferredSize(new Dimension(20,20));
 	    toGreenButton.setPreferredSize(new Dimension(20,20));
 	    toYellowButton.setPreferredSize(new Dimension(20,20));
 	    toMagentaButton.setPreferredSize(new Dimension(20,20));
+	    eraseButton.setPreferredSize(new Dimension(20,20));
+	   
 	    //Brush Sizes
-	    smallButton = new JButton("S");
-	    mediumButton = new JButton("M");
-	    largeButton = new JButton("L");
+	    smallButton = new JButton(smallDot);
+	    mediumButton = new JButton(mediumDot);
+	    largeButton = new JButton(largeDot);	    
 
-	    smallButton.setPreferredSize(new Dimension(30,30));
+		smallButton.setOpaque(false);
+		smallButton.setContentAreaFilled(false);
+		smallButton.setBorderPainted(false);
+
+		mediumButton.setOpaque(false);
+		mediumButton.setContentAreaFilled(false);
+		mediumButton.setBorderPainted(false);
+
+		largeButton.setOpaque(false);
+		largeButton.setContentAreaFilled(false);
+		largeButton.setBorderPainted(false);
+
+		clearButton.setOpaque(false);
+		clearButton.setContentAreaFilled(false);
+		clearButton.setBorderPainted(false);
+
+		eraseButton.setOpaque(false);
+		eraseButton.setContentAreaFilled(false);
+		eraseButton.setBorderPainted(false);
+
+	    smallButton.setPreferredSize(new Dimension(20,20));
 	    mediumButton.setPreferredSize(new Dimension(30,30));
 	    largeButton.setPreferredSize(new Dimension(30,30));
-	      
+	    clearButton.setPreferredSize(new Dimension(30,30));
+
 	    clearButton.addActionListener(actionListener);
 	    toRedButton.addActionListener(actionListener);
 	    toBlackButton.addActionListener(actionListener);
@@ -121,6 +170,38 @@ public class DaddyGUI {
 	    largeButton.addActionListener(actionListener);
 	    eraseButton.addActionListener(actionListener);
 	      
+	     clearButton.addMouseListener(new MouseAdapter(){
+			public void mouseEntered(MouseEvent e){
+				SwingUtilities.invokeLater(new Runnable() {
+
+   							 @Override
+    					public void run() {
+    			ImageIcon clr = new ImageIcon("icons/clear_hover.png");
+				Image clrImage = clr.getImage();
+				Image newClr = clrImage.getScaledInstance(30,30,java.awt.Image.SCALE_SMOOTH);
+				clr = new ImageIcon(newClr);
+
+				clearButton.setIcon(clr);
+     				 }
+				});
+			}
+
+			public void mouseExited(MouseEvent e){
+				SwingUtilities.invokeLater(new Runnable() {
+
+   							 @Override
+    					public void run() {
+    			ImageIcon clrOld = new ImageIcon("icons/clear.png");
+				Image clrImageOld = clrOld.getImage();
+				Image oldClr = clrImageOld.getScaledInstance(30,30,java.awt.Image.SCALE_SMOOTH);
+				clrOld = new ImageIcon(oldClr);
+
+				clearButton.setIcon(clrOld);
+     				 }
+				});
+			}
+		});
+
 	    controlPanel.add(clearButton);
 	    controlPanel.add(toRedButton);
 	    controlPanel.add(toBlackButton);
@@ -132,12 +213,12 @@ public class DaddyGUI {
 	    controlPanel.add(mediumButton);
 	    controlPanel.add(largeButton);
 	    controlPanel.add(eraseButton);
-	      
-	    content.add(controlPanel,BorderLayout.NORTH);
-	      
-        content.add(wordPanel,BorderLayout.SOUTH);
-              
 
+		// Chat Panel
+		chatPanel = new JPanel();
+		chatPanel.setLayout(new BorderLayout());
+		drawingArea = new DrawingArea2(this.client);
+		
 		inputField = new JTextField(10);
 		inputField.addKeyListener(sendViaEnter());
 		
@@ -147,43 +228,41 @@ public class DaddyGUI {
 		chatArea = new JTextArea(40,30);
 		chatArea.setEditable(false);
 		chatArea.setLineWrap(true);
-		
+		chatArea.setBackground(Color.black);
+		chatArea.setForeground(Color.white);
+		displayInstructions();
+
 		chatPanel.add(inputField,BorderLayout.CENTER);
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
 		
+		content.add(controlPanel,BorderLayout.NORTH);
 		content.add(chatPanel,BorderLayout.EAST);
 		content.add(drawingArea,BorderLayout.CENTER);
-//		frame.add(content);
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+	}
+
+	private ActionListener clearAreaViaButton(){
+		ActionListener actionPerformed = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				drawingArea.clear();
+				client.sendGameData("PLAYERCLEAR");
+				drawingArea.repaint();
+			}
+		};
+	return actionPerformed;
 	}
 	
 	private ActionListener sendViaButton() {
 		ActionListener actionPerformed = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				client.send
 				client.sendChat();
 				clearField();
 			}
-		};
-		return actionPerformed;
-	}
-
-	private KeyListener sendViaEnter() {
-		KeyListener actionPerformed = new KeyListener(){
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					client.sendChat();
-					clearField();
-				}
-			}
-			@Override
-			public void keyTyped(KeyEvent e) {}
-			@Override
-			public void keyReleased(KeyEvent e) {}
 		};
 		return actionPerformed;
 	}
@@ -217,7 +296,34 @@ public class DaddyGUI {
          
       }
    };
+
+	private KeyListener sendViaEnter() {
+		KeyListener actionPerformed = new KeyListener(){
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					client.sendChat();
+					clearField();
+				}
+			}
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			@Override
+			public void keyReleased(KeyEvent e) {}
+		};
+		return actionPerformed;
+	}
 	
+	private void displayInstructions(){
+		String instructions = "Players must guess the secret word based on the drawings that "
+        + "the artist performs. With every turn, the word would be different and you have "
+        + "80 seconds to guess it right. Points earned will depend on the time it took "
+        + "you to guess. Good luck!\n";
+    
+		this.chatArea.append(instructions);
+
+	}
+
 	private void clearField(){
 		inputField.setText("");
 	}

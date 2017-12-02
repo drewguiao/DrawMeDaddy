@@ -104,7 +104,11 @@ public class GameClient implements Runnable{
 				sendGameData("CONNECT "+playerName);
 				// System.out.println("Sending connection request!");
 			}else if(gameConnected){
-				if(serverData.startsWith("PLAYER")){
+
+				if(serverData.startsWith("PLAYERCLEAR")){
+					gui.getDrawingArea().clear();
+					gui.getDrawingArea().repaint();
+				}else if(serverData.startsWith("PLAYER")){
 					String[] playersInfo = serverData.split(":");
 					for(int i = 0; i< playersInfo.length;i++){
 						String[] playerInfo = playersInfo[i].split(" ");
