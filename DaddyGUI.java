@@ -26,13 +26,14 @@ public class DaddyGUI {
 	private GameClient client;
 	private Container content;
 	private DrawingArea2 drawingArea;
-	private JTextField inputField;
-	private JPanel chatPanel,controlPanel;
-	private JTextArea chatArea;
-	//	private ChatArea chatArea;
+
+	private JTextField inputField,timerField;
+	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel;
+	private JTextArea chatArea,playerListField;
 	private String playerName;
 	private JButton eraseButton, sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
-	
+	private CountdownTimer timer;
+
 	public DaddyGUI(GameClient client, String playerName){
 		this.playerName = playerName;
 		this.frame = new JFrame("DrawMeDaddy:" +playerName);
@@ -117,7 +118,6 @@ public class DaddyGUI {
 	    toYellowButton = new JButton(icon5);
 	    toMagentaButton = new JButton(icon6);
 	    eraseButton = new JButton(eraser);
-
 
 	    //Adjusting button sizes
 	    toBlackButton.setPreferredSize(new Dimension(20,20));
@@ -208,8 +208,8 @@ public class DaddyGUI {
 	    controlPanel.add(toBlueButton);
 	    controlPanel.add(toGreenButton);
 	    controlPanel.add(toYellowButton);
-        controlPanel.add(toMagentaButton);
-        controlPanel.add(smallButton);
+      controlPanel.add(toMagentaButton);
+      controlPanel.add(smallButton);
 	    controlPanel.add(mediumButton);
 	    controlPanel.add(largeButton);
 	    controlPanel.add(eraseButton);
@@ -236,6 +236,9 @@ public class DaddyGUI {
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
 		
+		initializeTimerAndPlayerListPanel();
+		content.add(timerAndPlayerListPanel, BorderLayout.WEST);
+
 		content.add(controlPanel,BorderLayout.NORTH);
 		content.add(chatPanel,BorderLayout.EAST);
 		content.add(drawingArea,BorderLayout.CENTER);
@@ -338,6 +341,34 @@ public class DaddyGUI {
 	
 	public DrawingArea2 getDrawingArea(){
 		return this.drawingArea;
+	}
+
+	private void initializeTimerAndPlayerListPanel(){
+		timerAndPlayerListPanel = new JPanel();
+		timerAndPlayerListPanel.setLayout(new BorderLayout());
+		
+		timerField = new JTextField(5);
+		timerField.setEditable(false);
+		// timer = new CountdownTimer(80);
+		playerListField = new JTextArea(10,10);
+		playerListField.setEditable(false);
+		timerAndPlayerListPanel.add(playerListField, BorderLayout.WEST);
+		timerAndPlayerListPanel.add(timerField,BorderLayout.NORTH);
+		content.add(timerAndPlayerListPanel,BorderLayout.WEST);
+	}
+
+	public void startTimer(){
+		timer = new CountdownTimer(80,timerField);
+		timer.start();
+		
+	}
+
+	public JTextArea getPlayerListField(){
+		return this.playerListField;
+	}
+
+	public CountdownTimer getTimer(){
+		return this.timer;
 	}
 	
 	public void render() {

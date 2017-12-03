@@ -16,7 +16,7 @@ public class GameServerThread extends Thread implements Constants{
 	private String playerData;
 	private DatagramSocket serverSocket = null;
 	private GameState game;
-
+	private WordFetcher getter = new WordFetcher();
 
 	public GameServerThread(GameServer gameServer, int portNumber, int playerLimit){
 		this.gameServer = gameServer;
@@ -61,7 +61,6 @@ public class GameServerThread extends Thread implements Constants{
 				GamePlayer player = new GamePlayer(tokens[1],packet.getAddress(),packet.getPort());
 				game.update(tokens[1],player);
 				System.out.println("Player connected "+tokens[1]);
-			
 				broadcast("CONNECTED "+tokens[1]);
 				// change limit
 				playerCount++;
@@ -74,13 +73,17 @@ public class GameServerThread extends Thread implements Constants{
 			System.out.println("game State: Start");
 			broadcast("START");
 			broadcast("PLAYERCLEAR");
+			String wordToGuess = suitWord();
+			broadcast(wordToGuess);
 			gameStatus = IN_PROGRESS;
 			break;
 		case IN_PROGRESS:
 			//select word from bag of words
 			//display to user
 
-			if(playerData.startsWith("PLAYERCLEAR")){
+			if(playerData.startsWith("divideTime")){
+				broadcast("divideTime");
+			}else if(playerData.startsWith("PLAYERCLEAR")){
 				String message = playerData;
 				broadcast(message);
 			}else if(playerData.startsWith("PLAYER")){
@@ -110,7 +113,7 @@ public class GameServerThread extends Thread implements Constants{
 				player.setBrushSize(brushSize);
 			
 				game.update(playerName, player);
-				broadcast(game.toString());
+				 broadcast(game.toString());
 			}
 			break;
 			}
@@ -139,8 +142,13 @@ public class GameServerThread extends Thread implements Constants{
 
 		}
 	}
-	// public void getGameState(){
-	// 	return this.game;
-	// }
+
+	private String suitWord(){
+		String wordIndicator = "WordToGuess ";
+		String word = this.getter.fetch();
+		String wordToGuess = wordIndicator + word;
+		return wordToGuess;
+	}
+
 
 }

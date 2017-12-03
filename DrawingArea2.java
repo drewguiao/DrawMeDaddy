@@ -145,5 +145,5 @@ public class DrawingArea2 extends JComponent{
 	public void setBrushLarge(){
 		brushSize = 10.0f;
 		currBrush = brushSize;
-	}	
+  }
 }
