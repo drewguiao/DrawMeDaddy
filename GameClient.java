@@ -25,9 +25,10 @@ public class GameClient implements Runnable{
 	private String serverData = null;
 	private boolean gameConnected = false;
 	private DaddyGUI gui;
-
+	private String wordToGuess;
 	private String playerName,serverName;
 	private int portNumber;
+	private boolean enableWordHints = true;
 
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
@@ -80,12 +81,6 @@ public class GameClient implements Runnable{
 		gui.render();
 
 		while(true){
-			// try {
-			// 	this.handle(console.readUTF());
-			// } catch (IOException e) {
-			// 	// TODO Auto-generated catch block
-			// 	e.printStackTrace();
-			// }
 			byte[] buf = new byte[256];
 			DatagramPacket packet = new DatagramPacket(buf,buf.length);
 			try{
@@ -99,12 +94,9 @@ public class GameClient implements Runnable{
 			if(!gameConnected && serverData.startsWith("CONNECTED")){
 				gameConnected = true;
 				System.out.println("Connected!!");
-//				send to everyone that u just connected here
 			}else if(!gameConnected){
 				sendGameData("CONNECT "+playerName);
-				// System.out.println("Sending connection request!");
 			}else if(gameConnected){
-
 				if(serverData.startsWith("PLAYERCLEAR")){
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
@@ -151,6 +143,11 @@ public class GameClient implements Runnable{
 						gui.getDrawingArea().repaint();
 					}
 
+				}else if(serverData.startsWith("WordToGuess")){
+					String[] wordInfo = serverData.split(" ");
+					this.wordToGuess = wordInfo[1];
+					// System.out.println("WORD: "+wordToGuess);
+
 				}
 				
 			}
@@ -170,16 +167,38 @@ public class GameClient implements Runnable{
 	public void sendChat() {
 		// TODO Auto-generated method stub
 		String message = gui.getInputField().getText();
+		boolean allowSending = true;
+		allowSending = checkDataToSend(message);
 		
-		try {
-			streamOut.writeUTF(message);
-			streamOut.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(allowSending){
+			try {
+				streamOut.writeUTF(message);
+				streamOut.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		
+	}
+
+	private boolean checkDataToSend(String message){
+		String formalMessage = message.toUpperCase();
+		String formalWordToGuess = wordToGuess.toUpperCase();
+		if(enableWordHints){
+			if(formalMessage.equals(formalWordToGuess)){
+				message = null;
+				System.out.println("YOU GOT THE WORD!");
+				// add score (time = score)
+				// increment round stages
+				// reset: enableWordHints
+				enableWordHints = false;
+				return false;
+			}
+		}else{
+			if(formalMessage.indexOf(formalWordToGuess) != -1){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	
