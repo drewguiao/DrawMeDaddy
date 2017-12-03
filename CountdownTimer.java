@@ -38,12 +38,12 @@ public class CountdownTimer implements Runnable{
 		this.remainingTime = this.remainingTime / 2;
 	}
 	
-	private  int setInterval(){
+	private void setInterval(){
 		if(remainingTime == 1){
 			timer.cancel();
 		}
 		this.remainingTime = remainingTime - 1;
-		return this.remainingTime;
+
 	}
 
 	@Override
@@ -51,7 +51,8 @@ public class CountdownTimer implements Runnable{
 		timer.scheduleAtFixedRate(new TimerTask(){
 			public void run(){
 				timerField.setText(""+remainingTime);
-				System.out.println(setInterval());
+				setInterval();
+				// System.out.println(setInterval());
 			}
 		}, delay, period);	
 		
