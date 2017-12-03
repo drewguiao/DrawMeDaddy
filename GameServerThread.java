@@ -74,7 +74,15 @@ public class GameServerThread extends Thread implements Constants{
 			broadcast("START");
 			broadcast("PLAYERCLEAR");
 			String wordToGuess = suitWord();
+			broadcast("ARTIST "+game.getRandomPlayer());
 			broadcast(wordToGuess);
+			
+			// stage ++;
+			// if stage = numOfPlayahs
+			// reset stage
+			// round++
+			// if round = 3
+			// get status
 			gameStatus = IN_PROGRESS;
 			break;
 		case IN_PROGRESS:
@@ -87,9 +95,7 @@ public class GameServerThread extends Thread implements Constants{
 				String message = playerData;
 				broadcast(message);
 			}else if(playerData.startsWith("PLAYER")){
-				
 				String[] playerInfo = playerData.split(" ");
-
 				String playerName = playerInfo[1];
 				
 				int x = Integer.parseInt(playerInfo[2].trim());
@@ -113,7 +119,12 @@ public class GameServerThread extends Thread implements Constants{
 				player.setBrushSize(brushSize);
 			
 				game.update(playerName, player);
-				 broadcast(game.toString());
+				broadcast(game.toString());
+			}else if(playerData.startsWith("addScore")){
+				String[] playerInfo = playerData.split(" ");
+				String name = playerInfo[1];
+				int score = Integer.parseInt(playerInfo[2]);
+				game.addScore(name,score);
 			}
 			break;
 			}

@@ -29,8 +29,8 @@ public class GameClient implements Runnable{
 	private String playerName,serverName;
 	private int portNumber;
 	private boolean enableWordHints = true;
-	
-
+	private boolean isArtist = false;
+	private boolean enableDrawingArea = true;
 
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
@@ -108,10 +108,26 @@ public class GameClient implements Runnable{
 					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("PLAYERA")){
 					translateCoordinateData(serverData);
+				}else if(serverData.startsWith("ARTIST")){
+					String[] artistInfo = serverData.split(" ");
+					String artist = artistInfo[1];
+					if(artist.equals(playerName)){
+						isArtist = true;
+						enableDrawingArea();
+					}else{
+						isArtist = false;
+						disableDrawingArea();
+					}
 				}
 				else if(serverData.startsWith("WordToGuess")){
 					String[] wordInfo = serverData.split(" ");
 					this.wordToGuess = wordInfo[1];
+					enableWordHints = true;
+					if(isArtist){
+						this.gui.getWordToGuessField().setText(wordToGuess);
+					}else{
+						displayWordAsUnderscores();
+					}
 					this.gui.startTimer();
 				}
 				
@@ -145,7 +161,7 @@ public class GameClient implements Runnable{
 	private boolean checkDataToSend(String message){
 		String formalMessage = message.toUpperCase();
 		String formalWordToGuess = wordToGuess.toUpperCase();
-		if(enableWordHints){
+		if(enableWordHints && !isArtist){
 			if(formalMessage.equals(formalWordToGuess)){
 				message = null;
 				System.out.println("YOU GOT THE WORD!");
@@ -153,6 +169,7 @@ public class GameClient implements Runnable{
 				// increment round stages
 				// reset: enableWordHints
 				enableWordHints = false;
+				sendGameData("addScore "+playerName+" "+this.gui.getTimer().getRemainingTime());
 				sendGameData("divideTime");
 				return false;
 			}
@@ -193,10 +210,28 @@ public class GameClient implements Runnable{
 			InetAddress address = InetAddress.getByName(serverName);
 			DatagramPacket packet = new DatagramPacket(buf,buf.length,address,portNumber);
 			datagramSocket.send(packet);
-		}catch(Exception e){
+		}catch(Exception e){	
 			System.out.println(e.getMessage());
 		}
 	}
+
+	private void enableDrawingArea(){
+		this.gui.getDrawingPanel().setEnabled(true);
+	}
+
+	private void disableDrawingArea(){
+		this.gui.getDrawingPanel().setEnabled(false);
+	}
+
+	private void displayWordAsUnderscores(){
+		int wordLength = this.wordToGuess.length();
+		String word = "";
+		for(int i = 0 ; i < wordLength; i++){
+			word += "- " ;
+		}
+		this.gui.getWordToGuessField().setText(word);
+	}
+
 
 	public String getPlayerName() {
 		// TODO Auto-generated method stub
