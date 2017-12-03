@@ -28,7 +28,7 @@ public class DaddyGUI {
 	private DrawingArea2 drawingArea;
 	private JTextField inputField,timerField;
 	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel;
-	private JTextArea chatArea;
+	private JTextArea chatArea,playerListField;
 	private String playerName;
 	private JButton sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
 	private CountdownTimer timer;
@@ -333,17 +333,26 @@ public class DaddyGUI {
 
 	private void initializeTimerAndPlayerListPanel(){
 		timerAndPlayerListPanel = new JPanel();
-		timerField = new JTextField(20);
+		timerAndPlayerListPanel.setLayout(new BorderLayout());
+		
+		timerField = new JTextField(5);
+		timerField.setEditable(false);
 		// timer = new CountdownTimer(80);
-
-		timerAndPlayerListPanel.add(timerField);
+		playerListField = new JTextArea(10,10);
+		playerListField.setEditable(false);
+		timerAndPlayerListPanel.add(playerListField, BorderLayout.WEST);
+		timerAndPlayerListPanel.add(timerField,BorderLayout.NORTH);
 		content.add(timerAndPlayerListPanel,BorderLayout.WEST);
-			}
+	}
 
 	public void startTimer(){
 		timer = new CountdownTimer(80,timerField);
 		timer.start();
 		
+	}
+
+	public JTextArea getPlayerListField(){
+		return this.playerListField;
 	}
 
 	public CountdownTimer getTimer(){
