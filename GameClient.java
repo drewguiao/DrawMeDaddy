@@ -29,6 +29,8 @@ public class GameClient implements Runnable{
 	private String playerName,serverName;
 	private int portNumber;
 	private boolean enableWordHints = true;
+	
+
 
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
@@ -97,7 +99,9 @@ public class GameClient implements Runnable{
 			}else if(!gameConnected){
 				sendGameData("CONNECT "+playerName);
 			}else if(gameConnected){
-				if(serverData.startsWith("PLAYERCLEAR")){
+				if(serverData.startsWith("divideTime")){
+					this.gui.getTimer().divide();
+				}else if(serverData.startsWith("PLAYERCLEAR")){
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
 				}else if(serverData.startsWith("PLAYER")){
@@ -142,12 +146,11 @@ public class GameClient implements Runnable{
 						gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
 						gui.getDrawingArea().repaint();
 					}
-
-				}else if(serverData.startsWith("WordToGuess")){
+				}
+				else if(serverData.startsWith("WordToGuess")){
 					String[] wordInfo = serverData.split(" ");
 					this.wordToGuess = wordInfo[1];
-					// System.out.println("WORD: "+wordToGuess);
-
+					this.gui.startTimer();
 				}
 				
 			}
@@ -191,6 +194,8 @@ public class GameClient implements Runnable{
 				// increment round stages
 				// reset: enableWordHints
 				enableWordHints = false;
+				sendGameData("divideTime");
+				// gui.getTimer().divide();
 				return false;
 			}
 		}else{
