@@ -39,7 +39,7 @@ public class CountdownTimer implements Runnable{
 	}
 	
 	private void setInterval(){
-		if(remainingTime == 1){
+		if(remainingTime == 0){
 			timer.cancel();
 		}
 		this.remainingTime = remainingTime - 1;
