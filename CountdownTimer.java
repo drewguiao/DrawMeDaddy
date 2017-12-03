@@ -1,5 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JTextField;
 
 public class CountdownTimer implements Runnable{
 	private final int delay = 1000;
@@ -10,11 +11,12 @@ public class CountdownTimer implements Runnable{
 	
 	private int timeLimit = 0;
 	private Timer timer;
-	
-	public CountdownTimer(int timeLimit){
+	private JTextField timerField;
+	public CountdownTimer(int timeLimit,JTextField timerField){
 		this.timeLimit = timeLimit;
 		this.remainingTime = timeLimit;
 		this.timer = new Timer();
+		this.timerField = timerField;
 		
 	}
 	
@@ -48,6 +50,7 @@ public class CountdownTimer implements Runnable{
 	public void run() {
 		timer.scheduleAtFixedRate(new TimerTask(){
 			public void run(){
+				timerField.setText(""+remainingTime);
 				System.out.println(setInterval());
 			}
 		}, delay, period);	
