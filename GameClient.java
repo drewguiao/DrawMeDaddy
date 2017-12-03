@@ -105,47 +105,9 @@ public class GameClient implements Runnable{
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
 				}else if(serverData.startsWith("PLAYER")){
-					String[] playersInfo = serverData.split(":");
-					for(int i = 0; i< playersInfo.length;i++){
-						String[] playerInfo = playersInfo[i].split(" ");
-						String playerName = playerInfo[1];
-						int x = Integer.parseInt(playerInfo[2]);
-						int y = Integer.parseInt(playerInfo[3]);
-						int newX = Integer.parseInt(playerInfo[4]);
-						int newY = Integer.parseInt(playerInfo[5]);
-						float brushSize = Float.parseFloat(playerInfo[6]);
-						Color color = null;
-						if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-							color = Color.RED;
-						}else{
-							color = Color.BLACK;
-						}
-						gui.getDrawingArea().getGraphicsObject().setPaint(color);
-						gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-						gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
-						gui.getDrawingArea().repaint();
-					}
+					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("PLAYERA")){
-					String[] playersInfo = serverData.split(":");
-					for(int i = 0; i< playersInfo.length;i++){
-						String[] playerInfo = playersInfo[i].split(" ");
-						String playerName = playerInfo[1];
-						int x = Integer.parseInt(playerInfo[2]);
-						int y = Integer.parseInt(playerInfo[3]);
-						int newX = Integer.parseInt(playerInfo[4]);
-						int newY = Integer.parseInt(playerInfo[5]);
-						float brushSize = Float.parseFloat(playerInfo[6]);
-						Color color = null;
-						if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-							color = Color.RED;
-						}else{
-							color = Color.BLACK;
-						}
-						gui.getDrawingArea().getGraphicsObject().setPaint(color);
-						gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-						gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
-						gui.getDrawingArea().repaint();
-					}
+					translateCoordinateData(serverData);
 				}
 				else if(serverData.startsWith("WordToGuess")){
 					String[] wordInfo = serverData.split(" ");
@@ -154,9 +116,6 @@ public class GameClient implements Runnable{
 				}
 				
 			}
-			
-			
-			
 		}
 		
 	}
@@ -195,7 +154,6 @@ public class GameClient implements Runnable{
 				// reset: enableWordHints
 				enableWordHints = false;
 				sendGameData("divideTime");
-				// gui.getTimer().divide();
 				return false;
 			}
 		}else{
@@ -206,12 +164,29 @@ public class GameClient implements Runnable{
 		return true;
 	}
 	
-	
-	public void broadCastCoordinates(int x, int y){
-		System.out.println("X: "+x+" Y: "+y);
+	private void translateCoordinateData(String serverData){
+		String[] playersInfo = serverData.split(":");
+		for(int i = 0; i< playersInfo.length;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int x = Integer.parseInt(playerInfo[2]);
+			int y = Integer.parseInt(playerInfo[3]);
+			int newX = Integer.parseInt(playerInfo[4]);
+			int newY = Integer.parseInt(playerInfo[5]);
+			float brushSize = Float.parseFloat(playerInfo[6]);
+			Color color = null;
+			if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
+				color = Color.RED;
+			}else{
+				color = Color.BLACK;
+			}
+			gui.getDrawingArea().getGraphicsObject().setPaint(color);
+			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+			gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
+			gui.getDrawingArea().repaint();
+		}
 	}
-	
-	
+
 	public void sendGameData(String message){
 		try{
 			byte[] buf = message.getBytes();
