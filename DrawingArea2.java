@@ -23,7 +23,6 @@ public class DrawingArea2 extends JComponent{
 	public DrawingArea2(GameClient client){
 		this.client = client;
 		setDoubleBuffered(false);
-		//brushSize = currBrush;
 		addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				
@@ -49,7 +48,6 @@ public class DrawingArea2 extends JComponent{
 
 					client.sendGameData("PLAYERA " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
 					graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-					// client.broadCastCoordinates(newX, newY);
 					graphicsObject.drawLine(oldX, oldY, newX, newY);
 					
 					repaint();
@@ -77,6 +75,10 @@ public class DrawingArea2 extends JComponent{
 
 	public Graphics2D getGraphicsObject(){
 		return this.graphicsObject;
+	}
+
+	public Image getImage(){
+		return this.image;
 	}
 	
 	public void clear() {
@@ -116,21 +118,21 @@ public class DrawingArea2 extends JComponent{
 		graphicsObject.setPaint(Color.magenta);
 	}
 
-	public void eraseDrawing(){
-		graphicsObject.setPaint(Color.white);
-		brushSize = 20.0f;
-		addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				oldX = e.getX();
-				oldY = e.getY();
-				graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-				client.broadCastCoordinates(oldX, oldY);
-				graphicsObject.drawLine(oldX, oldY, oldX, oldY);
+	// public void eraseDrawing(){
+	// 	graphicsObject.setPaint(Color.white);
+	// 	brushSize = 20.0f;
+	// 	addMouseListener(new MouseAdapter(){
+	// 		public void mousePressed(MouseEvent e){
+	// 			oldX = e.getX();
+	// 			oldY = e.getY();
+	// 			graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+	// 			sendGameData();
+	// 			graphicsObject.drawLine(oldX, oldY, oldX, oldY);
 				
-				repaint();
-			}
-		});
-	}
+	// 			repaint();
+	// 		}
+	// 	});
+	// }
 
 	//// BRUSH SIZES SETTINGS ////
 
