@@ -73,7 +73,6 @@ public class GameServerThread extends Thread implements Constants{
 			System.out.println("game State: Start");
 			broadcast("START");
 			broadcast("PLAYERCLEAR");
-
 			String wordToGuess = suitWord();
 			broadcast(wordToGuess);
 			gameStatus = IN_PROGRESS;
@@ -81,6 +80,7 @@ public class GameServerThread extends Thread implements Constants{
 		case IN_PROGRESS:
 			//select word from bag of words
 			//display to user
+
 			if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
 			}else if(playerData.startsWith("PLAYERCLEAR")){
@@ -143,13 +143,12 @@ public class GameServerThread extends Thread implements Constants{
 		}
 	}
 
-
-
 	private String suitWord(){
 		String wordIndicator = "WordToGuess ";
 		String word = this.getter.fetch();
 		String wordToGuess = wordIndicator + word;
 		return wordToGuess;
 	}
+
 
 }

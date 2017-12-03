@@ -26,12 +26,14 @@ public class DaddyGUI {
 	private GameClient client;
 	private Container content;
 	private DrawingArea2 drawingArea;
+
 	private JTextField inputField,timerField;
 	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel;
 	private JTextArea chatArea,playerListField;
 	private String playerName;
-	private JButton sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
+	private JButton eraseButton, sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
 	private CountdownTimer timer;
+
 	public DaddyGUI(GameClient client, String playerName){
 		this.playerName = playerName;
 		this.frame = new JFrame("DrawMeDaddy:" +playerName);
@@ -96,6 +98,11 @@ public class DaddyGUI {
 	    Image newClearIcon = clearImage.getScaledInstance(30,30,java.awt.Image.SCALE_SMOOTH);
 	    clearIcon = new ImageIcon(newClearIcon);
 
+	    ImageIcon eraser = new ImageIcon("icons/erase.png");
+	    Image eraserIcon = eraser.getImage();
+	    Image newEraserIcon = eraserIcon.getScaledInstance(20,20,java.awt.Image.SCALE_SMOOTH);
+	    eraser = new ImageIcon(newEraserIcon);
+
 	    JPanel controlPanel = new JPanel();
 	    JPanel wordPanel = new JPanel();
 	    JLabel wordLabel = new JLabel("GUESS ME");
@@ -110,7 +117,7 @@ public class DaddyGUI {
 	    toGreenButton = new JButton(icon4);
 	    toYellowButton = new JButton(icon5);
 	    toMagentaButton = new JButton(icon6);
-
+	    eraseButton = new JButton(eraser);
 
 	    //Adjusting button sizes
 	    toBlackButton.setPreferredSize(new Dimension(20,20));
@@ -119,6 +126,7 @@ public class DaddyGUI {
 	    toGreenButton.setPreferredSize(new Dimension(20,20));
 	    toYellowButton.setPreferredSize(new Dimension(20,20));
 	    toMagentaButton.setPreferredSize(new Dimension(20,20));
+	    eraseButton.setPreferredSize(new Dimension(20,20));
 	   
 	    //Brush Sizes
 	    smallButton = new JButton(smallDot);
@@ -141,6 +149,10 @@ public class DaddyGUI {
 		clearButton.setContentAreaFilled(false);
 		clearButton.setBorderPainted(false);
 
+		eraseButton.setOpaque(false);
+		eraseButton.setContentAreaFilled(false);
+		eraseButton.setBorderPainted(false);
+
 	    smallButton.setPreferredSize(new Dimension(20,20));
 	    mediumButton.setPreferredSize(new Dimension(30,30));
 	    largeButton.setPreferredSize(new Dimension(30,30));
@@ -156,6 +168,7 @@ public class DaddyGUI {
 	    smallButton.addActionListener(actionListener);
 	    mediumButton.addActionListener(actionListener);
 	    largeButton.addActionListener(actionListener);
+	    eraseButton.addActionListener(actionListener);
 	      
 	     clearButton.addMouseListener(new MouseAdapter(){
 			public void mouseEntered(MouseEvent e){
@@ -195,10 +208,11 @@ public class DaddyGUI {
 	    controlPanel.add(toBlueButton);
 	    controlPanel.add(toGreenButton);
 	    controlPanel.add(toYellowButton);
-        controlPanel.add(toMagentaButton);
-        controlPanel.add(smallButton);
+      controlPanel.add(toMagentaButton);
+      controlPanel.add(smallButton);
 	    controlPanel.add(mediumButton);
 	    controlPanel.add(largeButton);
+	    controlPanel.add(eraseButton);
 
 		// Chat Panel
 		chatPanel = new JPanel();
@@ -218,17 +232,13 @@ public class DaddyGUI {
 		chatArea.setForeground(Color.white);
 		displayInstructions();
 
-
 		chatPanel.add(inputField,BorderLayout.CENTER);
 		chatPanel.add(sendButton,BorderLayout.EAST);
 		chatPanel.add(chatArea,BorderLayout.NORTH);
 		
-
 		initializeTimerAndPlayerListPanel();
-
-
-
 		content.add(timerAndPlayerListPanel, BorderLayout.WEST);
+
 		content.add(controlPanel,BorderLayout.NORTH);
 		content.add(chatPanel,BorderLayout.EAST);
 		content.add(drawingArea,BorderLayout.CENTER);
@@ -283,6 +293,8 @@ public class DaddyGUI {
             drawingArea.setBrushMedium();
          }else if(e.getSource() == largeButton){
             drawingArea.setBrushLarge();
+         }else if(e.getSource() == eraseButton){
+            drawingArea.eraseDrawing();
          }
          
       }

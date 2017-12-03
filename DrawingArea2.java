@@ -15,6 +15,7 @@ public class DrawingArea2 extends JComponent{
 	private GameClient client;
 	private Image image;
 	private Graphics2D graphicsObject;
+	private float currBrush = 3.0f;
 	
 	private int oldX, oldY, newX, newY;
 	private float brushSize = 3.0f;
@@ -22,6 +23,7 @@ public class DrawingArea2 extends JComponent{
 	public DrawingArea2(GameClient client){
 		this.client = client;
 		setDoubleBuffered(false);
+		//brushSize = currBrush;
 		addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				
@@ -85,38 +87,63 @@ public class DrawingArea2 extends JComponent{
 	}
 	
 	public void setBrushToRed(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.red);
 	}
 
 	public void setBrushToBlack(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.black);
 	}
 
 	public void setBrushToBlue(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.blue);
 	}
 
 	public void setBrushToGreen(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.green);
 	}
 
 	public void setBrushToYellow(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.yellow);
 	}
 	
 	public void setBrushToMagenta(){
+		brushSize = currBrush;
 		graphicsObject.setPaint(Color.magenta);
+	}
+
+	public void eraseDrawing(){
+		graphicsObject.setPaint(Color.white);
+		brushSize = 20.0f;
+		addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				oldX = e.getX();
+				oldY = e.getY();
+				graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+				client.broadCastCoordinates(oldX, oldY);
+				graphicsObject.drawLine(oldX, oldY, oldX, oldY);
+				
+				repaint();
+			}
+		});
 	}
 
 	//// BRUSH SIZES SETTINGS ////
 
 	public void setBrushSmall(){
 		brushSize = 3.0f;
+		currBrush = brushSize;
 	}
 	public void setBrushMedium(){
 		brushSize = 5.0f;
+		currBrush = brushSize;
 	}
 	public void setBrushLarge(){
 		brushSize = 10.0f;
-	}	
+		currBrush = brushSize;
+  }
 }
