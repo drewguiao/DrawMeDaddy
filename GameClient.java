@@ -135,8 +135,7 @@ public class GameClient implements Runnable{
 					ensureBroadcastOnce("nextArtistPlease");
 				} else if(serverData.startsWith("FINALSCORELIST")){
 					translateFinalScoreData(serverData);
-				}
-				
+				} 	
 			}
 		}
 		
@@ -209,7 +208,6 @@ public class GameClient implements Runnable{
 			int newY = Integer.parseInt(coordinateInfo[4]);
 			float brushSize = Float.parseFloat(coordinateInfo[5]);
 			Color color = Color.BLACK;
-	
 			gui.getDrawingArea().getGraphicsObject().setPaint(color);
 			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 			gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);

@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 
 public class DrawingArea2 extends JComponent{
 	private GameClient client;
@@ -19,7 +20,8 @@ public class DrawingArea2 extends JComponent{
 	
 	private int oldX, oldY, newX, newY;
 	private float brushSize = 3.0f;
-	private Color brushColor = Color.BLACK;
+	private Color brushColor = Color.black;
+
 	public DrawingArea2(GameClient client){
 		this.client = client;
 		setDoubleBuffered(false);
@@ -43,6 +45,7 @@ public class DrawingArea2 extends JComponent{
 			public void mouseDragged(MouseEvent e) {
 				newX = e.getX();
 				newY = e.getY();
+				//System.out.println("brush color: " + brushColor);
 				
 				if(graphicsObject != null){
 
@@ -91,50 +94,48 @@ public class DrawingArea2 extends JComponent{
 	}
 	
 	public void setBrushToRed(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.red;
 		graphicsObject.setPaint(Color.red);
 	}
 
 	public void setBrushToBlack(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.black;
 		graphicsObject.setPaint(Color.black);
 	}
 
 	public void setBrushToBlue(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.blue;
 		graphicsObject.setPaint(Color.blue);
 	}
 
 	public void setBrushToGreen(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.green;
 		graphicsObject.setPaint(Color.green);
 	}
 
 	public void setBrushToYellow(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.yellow;
 		graphicsObject.setPaint(Color.yellow);
 	}
 	
 	public void setBrushToMagenta(){
-		//brushSize = currBrush;
+		brushSize = currBrush;
+		brushColor = Color.magenta;
 		graphicsObject.setPaint(Color.magenta);
 	}
 
-	// public void eraseDrawing(){
-	// 	graphicsObject.setPaint(Color.white);
-	// 	brushSize = 20.0f;
-	// 	addMouseListener(new MouseAdapter(){
-	// 		public void mousePressed(MouseEvent e){
-	// 			oldX = e.getX();
-	// 			oldY = e.getY();
-	// 			graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-	// 			sendGameData();
-	// 			graphicsObject.drawLine(oldX, oldY, oldX, oldY);
-				
-	// 			repaint();
-	// 		}
-	// 	});
-	// }
+	public void eraseDrawing(){
+		brushSize = 20.0f;
+		brushColor = Color.white;
+		graphicsObject.setPaint(Color.white);
+		//System.out.println("White brush: " + brushColor);
+	}
+
 
 	//// BRUSH SIZES SETTINGS ////
 

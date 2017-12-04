@@ -226,6 +226,7 @@ public class DaddyGUI{
 		
 
 		drawingArea = new DrawingArea2(this.client);
+		drawingArea.setBackground(Color.WHITE);
 		
 		inputField = new JTextField(10);
 		inputField.addKeyListener(sendViaEnter());
