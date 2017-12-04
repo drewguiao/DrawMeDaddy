@@ -34,7 +34,6 @@ public class GameServer implements Runnable,Constants
 
 	   
    }
-   
    private void setUpChatServer(){
 	   try
 	      {  System.out.println("Binding to port " + portNumber + ", please wait  ...");
@@ -114,7 +113,7 @@ public void start()
          remove(ID); }
       else
          for (int i = 0; i < clientCount; i++)
-            clients[i].send(ipAddress + "/"+ID+": " + input);   
+            clients[i].send(input);   
    }
    public synchronized void remove(int ID)
    {  int pos = findClient(ID);

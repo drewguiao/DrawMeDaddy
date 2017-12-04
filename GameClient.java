@@ -196,7 +196,7 @@ public class GameClient implements Runnable{
 		
 		if(allowSending){
 			try {
-				streamOut.writeUTF(message);
+				streamOut.writeUTF(playerName+":"+message);
 				streamOut.flush();
 			} catch (IOException e) {
 				e.printStackTrace();

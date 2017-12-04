@@ -33,7 +33,7 @@ public class FinalScore extends JFrame{
 		   JPanel scorePanel = new JPanel();
 		   JTextArea scoreArea = new JTextArea();
 		   scoreArea.setText(scoreData);
-
+		   scoreArea.setEditable(false);
 		   scorePanel.add(scoreArea);
 		   conitainer.add(scorePanel,BorderLayout.CENTER);
 
