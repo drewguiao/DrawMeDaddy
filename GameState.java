@@ -32,11 +32,11 @@ public class GameState {
 	}
 	
 	public String getScoreList(){
-		String return_val ="";
+		String return_val ="SCORELIST ";
 		for(Iterator<?> ite = scoreList.keySet().iterator();ite.hasNext();){
 			String name = (String)ite.next();
-			return_val+= name+" ";
-			System.out.println(return_val);
+			int score = scoreList.get(name);
+			return_val+= name+" "+score+":SCORELIST ";
 		}
 
 		return return_val;

@@ -4,6 +4,27 @@ import java.io.*;
 import java.awt.Color;
 import java.util.Iterator;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.Socket;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 
 public class GameServerThread extends Thread implements Constants{
@@ -70,6 +91,7 @@ public class GameServerThread extends Thread implements Constants{
 				if(playerCount == playerLimit){
 					gameStatus=GAME_START;
 				}
+				broadcast(this.game.getScoreList());
 			}
 			break;
 		case GAME_START:
@@ -111,7 +133,7 @@ public class GameServerThread extends Thread implements Constants{
 			}else if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
 
-				// BROADCAST SCORE UPDATE
+				broadcast(this.game.getScoreList());
 			}else if(playerData.startsWith("PLAYERCLEAR")){
 				String message = playerData;
 				broadcast(message);
@@ -157,7 +179,11 @@ public class GameServerThread extends Thread implements Constants{
 			}
 			break;
 		case GAME_END: System.out.println("GAME ENDS!!!!!!!");
-			break;
+					   
+					   broadcast("FINAL"+this.game.getScoreList());
+
+						break;
+						break;
 			}
 		}
 
