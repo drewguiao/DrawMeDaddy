@@ -77,7 +77,7 @@ public class GameServerThread extends Thread implements Constants{
 				round++;
 				stage = 0;
 			}
-			if(round >= numOfRounds){
+			if(round > numOfRounds){
 				broadcast("endGame");
 				System.out.println("GAME_END");
 				gameStatus = GAME_END;
@@ -147,6 +147,7 @@ public class GameServerThread extends Thread implements Constants{
 			}
 			break;
 		case GAME_END: System.out.println("GAME ENDS!!!!!!!");
+			// show status of players
 			break;
 			}
 		}
