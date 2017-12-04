@@ -343,6 +343,10 @@ public class DaddyGUI {
 		return this.inputField;
 	}
 	
+	public JPanel getControlPanel(){
+		return this.controlPanel;
+	}
+
 	public DrawingArea2 getDrawingArea(){
 		return this.drawingArea;
 	}
@@ -365,10 +369,20 @@ public class DaddyGUI {
 		timerAndPlayerListPanel.add(playerListField, BorderLayout.WEST);
 		timerAndPlayerListPanel.add(timerField,BorderLayout.NORTH);
 		content.add(timerAndPlayerListPanel,BorderLayout.WEST);
+
+		timer = new CountdownTimer(20,timerField);
+
+	}
+
+	public JTextField getTimerField(){
+		return this.timerField;
+	}
+
+	public void initializeTimer(){
+		timer = new CountdownTimer(20,timerField);
 	}
 
 	public void startTimer(){
-		timer = new CountdownTimer(80,timerField);
 		timer.start();
 	}
 

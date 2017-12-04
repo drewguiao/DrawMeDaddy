@@ -137,7 +137,7 @@ public class GameServerThread extends Thread implements Constants{
 				player.setBrushColor(color);
 				player.setBrushSize(brushSize);
 			
-				game.update(playerName, player);
+				// game.update(playerName, player);
 				broadcast(game.toString());
 			}else if(playerData.startsWith("addScore")){
 				String[] playerInfo = playerData.split(" ");
