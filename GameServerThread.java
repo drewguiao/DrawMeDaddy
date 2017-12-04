@@ -4,6 +4,27 @@ import java.io.*;
 import java.awt.Color;
 import java.util.Iterator;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.Socket;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 
 public class GameServerThread extends Thread implements Constants{
@@ -17,7 +38,10 @@ public class GameServerThread extends Thread implements Constants{
 	private DatagramSocket serverSocket = null;
 	private GameState game;
 	private WordFetcher getter = new WordFetcher();
-
+	private int numOfStages;
+	private int numOfRounds = 3;
+	private int stage = 0;
+	private int round = 0;
 	public GameServerThread(GameServer gameServer, int portNumber, int playerLimit){
 		this.gameServer = gameServer;
 		this.portNumber = portNumber;
@@ -67,29 +91,54 @@ public class GameServerThread extends Thread implements Constants{
 				if(playerCount == playerLimit){
 					gameStatus=GAME_START;
 				}
+				broadcast(this.game.getScoreList());
 			}
 			break;
 		case GAME_START:
-			System.out.println("game State: Start");
-			broadcast("START");
-			broadcast("PLAYERCLEAR");
-			String wordToGuess = suitWord();
-			broadcast(wordToGuess);
-			gameStatus = IN_PROGRESS;
+			if(stage == numOfStages){
+				round++;
+				stage = 0;
+			}
+			if(round >= numOfRounds){
+				broadcast("endGame");
+				System.out.println("GAME_END");
+				gameStatus = GAME_END;
+			}
+			if(gameStatus != GAME_END){
+				numOfStages = game.getNumOfPlayers();
+				broadcast("Round "+round+" Stage "+(stage+1)+"/"+numOfStages);
+				broadcast("START");
+				broadcast("PLAYERCLEAR");
+				broadcast("ARTIST "+game.getRandomPlayer());
+				String wordToGuess = suitWord();
+				broadcast(wordToGuess);
+				stage++;
+
+				// stage ++;
+				// if stage = numOfPlayahs
+				// reset stage
+				// round++
+				// if round = 3
+				// get status
+				gameStatus = IN_PROGRESS;
+				
+				
+			}
 			break;
 		case IN_PROGRESS:
 			//select word from bag of words
 			//display to user
-
-			if(playerData.startsWith("divideTime")){
+			if(playerData.startsWith("nextArtistPlease")){
+				gameStatus = GAME_START;
+			}else if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
+
+				broadcast(this.game.getScoreList());
 			}else if(playerData.startsWith("PLAYERCLEAR")){
 				String message = playerData;
 				broadcast(message);
 			}else if(playerData.startsWith("PLAYER")){
-				
 				String[] playerInfo = playerData.split(" ");
-
 				String playerName = playerInfo[1];
 				
 				int x = Integer.parseInt(playerInfo[2].trim());
@@ -100,8 +149,16 @@ public class GameServerThread extends Thread implements Constants{
 				Color color = null;
 				if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
 					color = Color.RED;
-				}else{
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=0]")){
 					color = Color.BLACK;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=255]")){
+					color = Color.BLUE;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=255,b=0]")){
+					color = Color.GREEN;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=255,b=0]")){
+					color = Color.YELLOW;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=255]")){
+					color = Color.MAGENTA;
 				}
 				GamePlayer player = game.getPlayers().get(playerName);
 				
@@ -112,10 +169,20 @@ public class GameServerThread extends Thread implements Constants{
 				player.setBrushColor(color);
 				player.setBrushSize(brushSize);
 			
-				game.update(playerName, player);
-				 broadcast(game.toString());
+				// game.update(playerName, player);
+				broadcast(game.toString());
+			}else if(playerData.startsWith("addScore")){
+				String[] playerInfo = playerData.split(" ");
+				String name = playerInfo[1];
+				int score = Integer.parseInt(playerInfo[2]);
+				game.addScore(name,score);
 			}
 			break;
+		case GAME_END: System.out.println("GAME ENDS!!!!!!!");
+					   
+					   broadcast("FINAL"+this.game.getScoreList());
+					   gameStatus = WAITING_FOR_PLAYERS;
+						break;
 			}
 		}
 
@@ -139,8 +206,8 @@ public class GameServerThread extends Thread implements Constants{
 			GamePlayer player=game.getPlayers().get(name);			
 			System.out.println(message);
 			send(player,message);
-
 		}
+
 	}
 
 	private String suitWord(){

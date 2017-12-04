@@ -29,9 +29,9 @@ public class GameClient implements Runnable{
 	private String playerName,serverName;
 	private int portNumber;
 	private boolean enableWordHints = true;
-	
-
-
+	private boolean isArtist = false;
+	private boolean enableDrawingArea = true;
+	private int dataCounter = 0;
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
 		this.serverName = serverName;
@@ -40,7 +40,7 @@ public class GameClient implements Runnable{
 		connectDrawing();
 		start();
 	}
-
+	
 	private void connectChat(){
 		System.out.println("Establishing connection!");
 		try{
@@ -105,60 +105,56 @@ public class GameClient implements Runnable{
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
 				}else if(serverData.startsWith("PLAYER")){
-					String[] playersInfo = serverData.split(":");
-					for(int i = 0; i< playersInfo.length;i++){
-						String[] playerInfo = playersInfo[i].split(" ");
-						String playerName = playerInfo[1];
-						int x = Integer.parseInt(playerInfo[2]);
-						int y = Integer.parseInt(playerInfo[3]);
-						int newX = Integer.parseInt(playerInfo[4]);
-						int newY = Integer.parseInt(playerInfo[5]);
-						float brushSize = Float.parseFloat(playerInfo[6]);
-						Color color = null;
-						if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-							color = Color.RED;
-						}else{
-							color = Color.BLACK;
-						}
-						gui.getDrawingArea().getGraphicsObject().setPaint(color);
-						gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-						gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
-						gui.getDrawingArea().repaint();
-					}
+					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("PLAYERA")){
-					String[] playersInfo = serverData.split(":");
-					for(int i = 0; i< playersInfo.length;i++){
-						String[] playerInfo = playersInfo[i].split(" ");
-						String playerName = playerInfo[1];
-						int x = Integer.parseInt(playerInfo[2]);
-						int y = Integer.parseInt(playerInfo[3]);
-						int newX = Integer.parseInt(playerInfo[4]);
-						int newY = Integer.parseInt(playerInfo[5]);
-						float brushSize = Float.parseFloat(playerInfo[6]);
-						Color color = null;
-						if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-							color = Color.RED;
-						}else{
-							color = Color.BLACK;
-						}
-						gui.getDrawingArea().getGraphicsObject().setPaint(color);
-						gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-						gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
-						gui.getDrawingArea().repaint();
+					translateCoordinateData(serverData);
+				}else if(serverData.startsWith("ARTIST")){
+					String[] artistInfo = serverData.split(" ");
+					String artist = artistInfo[1];
+					if(artist.equals(playerName)){
+						isArtist = true;
+						//enableDrawingArea();
+					}else{
+						isArtist = false;
+						//disableDrawingArea();
 					}
+				}else if(serverData.startsWith("SCORELIST")){
+					translateScoreData(serverData);
 				}
 				else if(serverData.startsWith("WordToGuess")){
 					String[] wordInfo = serverData.split(" ");
 					this.wordToGuess = wordInfo[1];
+					enableWordHints = true;
+					if(isArtist){
+						this.gui.getWordToGuessField().setText(wordToGuess);
+					}else{
+						displayWordAsUnderscores();
+					}
+					this.gui.initializeTimer();
 					this.gui.startTimer();
-				}
+					dataCounter = 0;
+				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
+					System.out.println("UPDATE NA BUI");
+					ensureBroadcastOnce("nextArtistPlease");
+				} else if(serverData.startsWith("FINALSCORELIST")){
+					translateFinalScoreData(serverData);
+				} 
 				
 			}
-			
-			
-			
 		}
 		
+	}
+
+	private void ensureBroadcastOnce(String message){
+		dataCounter++;
+		if(dataCounter == 1){
+			sendGameData(message);
+		}
+	}
+
+	private void resetFields(){
+		enableWordHints = true;
+		isArtist = false;
 	}
 	
 	public void handle(String message) {
@@ -186,16 +182,16 @@ public class GameClient implements Runnable{
 	private boolean checkDataToSend(String message){
 		String formalMessage = message.toUpperCase();
 		String formalWordToGuess = wordToGuess.toUpperCase();
-		if(enableWordHints){
+		if(enableWordHints && !isArtist){
 			if(formalMessage.equals(formalWordToGuess)){
 				message = null;
-				System.out.println("YOU GOT THE WORD!");
+				System.out.println("YOU GOT THE WORD! "+wordToGuess);
 				// add score (time = score)
 				// increment round stages
 				// reset: enableWordHints
 				enableWordHints = false;
+				sendGameData("addScore "+playerName+" "+this.gui.getTimer().getRemainingTime());
 				sendGameData("divideTime");
-				// gui.getTimer().divide();
 				return false;
 			}
 		}else{
@@ -206,22 +202,89 @@ public class GameClient implements Runnable{
 		return true;
 	}
 	
-	
-	public void broadCastCoordinates(int x, int y){
-		System.out.println("X: "+x+" Y: "+y);
+	private void translateCoordinateData(String serverData){
+		String[] playersInfo = serverData.split(":");
+		for(int i = 0; i< playersInfo.length;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int x = Integer.parseInt(playerInfo[2]);
+			int y = Integer.parseInt(playerInfo[3]);
+			int newX = Integer.parseInt(playerInfo[4]);
+			int newY = Integer.parseInt(playerInfo[5]);
+			float brushSize = Float.parseFloat(playerInfo[6]);
+			Color color = null;
+			String str_color = playerInfo[7].trim();
+			//System.out.println("String color:" + str_color);
+			if(str_color.equals("java.awt.Color[r=255,g=0,b=0]")){
+				color = Color.red;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=255]")){
+				color = Color.blue;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=0]")){
+				color = Color.yellow;
+			}else if (str_color.equals("java.awt.Color[r=0,g=255,b=0]")){
+				color = Color.green;
+			}else if (str_color.equals("java.awt.Color[r=255,g=0,b=255]")){
+				color = Color.magenta;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=255]")){
+				color = Color.white;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=0]")){
+				color = Color.black;
+			}
+			gui.getDrawingArea().getGraphicsObject().setPaint(color);
+			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+			gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
+			gui.getDrawingArea().repaint();
+		}
 	}
-	
-	
+	private void translateScoreData(String serverData){
+		String playersScore = "";
+		String[] playersInfo = serverData.split(":");
+		for(int i =0; i < playersInfo.length-1;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int score = Integer.parseInt(playerInfo[2]);
+
+			playersScore+= playerName + " " + score + " " + "\n";
+
+		}
+		this.gui.getPlayerListField().setText(playersScore);
+	}
+
+	private void translateFinalScoreData(String serverData){
+		String playersScore = "";
+		String[] playersInfo = serverData.split(":");
+		for(int i =0; i < playersInfo.length-1;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int score = Integer.parseInt(playerInfo[2]);
+
+			playersScore+= playerName + " " + score + " " + "\n";
+
+		}
+		
+		FinalScore finale = new FinalScore(playersScore);
+	}
+
 	public void sendGameData(String message){
 		try{
 			byte[] buf = message.getBytes();
 			InetAddress address = InetAddress.getByName(serverName);
 			DatagramPacket packet = new DatagramPacket(buf,buf.length,address,portNumber);
 			datagramSocket.send(packet);
-		}catch(Exception e){
+		}catch(Exception e){	
 			System.out.println(e.getMessage());
 		}
 	}
+
+	private void displayWordAsUnderscores(){
+		int wordLength = this.wordToGuess.length();
+		String word = "";
+		for(int i = 0 ; i < wordLength; i++){
+			word += "- " ;
+		}
+		this.gui.getWordToGuessField().setText(word);
+	}
+
 
 	public String getPlayerName() {
 		// TODO Auto-generated method stub
