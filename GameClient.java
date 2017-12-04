@@ -31,7 +31,7 @@ public class GameClient implements Runnable{
 	private boolean enableWordHints = true;
 	private boolean isArtist = false;
 	private boolean enableDrawingArea = true;
-
+	private int dataCounter = 0;
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
 		this.serverName = serverName;
@@ -128,12 +128,29 @@ public class GameClient implements Runnable{
 					}else{
 						displayWordAsUnderscores();
 					}
+					this.gui.initializeTimer();
 					this.gui.startTimer();
+					dataCounter = 0;
+				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
+					System.out.println("UPDATE NA BUI");
+					ensureBroadcastOnce("nextArtistPlease");
 				}
 				
 			}
 		}
 		
+	}
+
+	private void ensureBroadcastOnce(String message){
+		dataCounter++;
+		if(dataCounter == 1){
+			sendGameData(message);
+		}
+	}
+
+	private void resetFields(){
+		enableWordHints = true;
+		isArtist = false;
 	}
 	
 	public void handle(String message) {
@@ -164,7 +181,7 @@ public class GameClient implements Runnable{
 		if(enableWordHints && !isArtist){
 			if(formalMessage.equals(formalWordToGuess)){
 				message = null;
-				System.out.println("YOU GOT THE WORD!");
+				System.out.println("YOU GOT THE WORD! "+wordToGuess);
 				// add score (time = score)
 				// increment round stages
 				// reset: enableWordHints
@@ -216,11 +233,11 @@ public class GameClient implements Runnable{
 	}
 
 	private void enableDrawingArea(){
-		this.gui.getDrawingPanel().setEnabled(true);
+		// this.gui.getControlPanel();
 	}
 
 	private void disableDrawingArea(){
-		this.gui.getDrawingPanel().setEnabled(false);
+		// this.gui.getControlPanel();
 	}
 
 	private void displayWordAsUnderscores(){

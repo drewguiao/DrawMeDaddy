@@ -30,7 +30,7 @@ public class GameState {
 		}
 		return retVal;
 	}
-	
+
 	public Map<String, GamePlayer> getPlayers(){
 		return players;
 	}
@@ -43,6 +43,8 @@ public class GameState {
 		int numOfPlayers = playerList.size();
 		int cacheSize = cache.size();
 
+		System.out.println(cacheSize+"cache "+numOfPlayers+" players");
+		System.out.println(playerList);
 		String playerName = randomizePlayer();
 
 		while(cache.contains(playerName)){
@@ -52,7 +54,7 @@ public class GameState {
 			playerName = randomizePlayer();
 		}
 		cache.add(playerName);
-
+		System.out.println(playerName);
 		return playerName;
 	}
 
@@ -69,4 +71,7 @@ public class GameState {
 		System.out.println(scoreList);
 	}
 
+	public int getNumOfPlayers(){
+		return this.scoreList.size();
+	}
 }
