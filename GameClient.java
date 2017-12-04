@@ -138,8 +138,7 @@ public class GameClient implements Runnable{
 					ensureBroadcastOnce("nextArtistPlease");
 				} else if(serverData.startsWith("FINALSCORELIST")){
 					translateFinalScoreData(serverData);
-				}
-				
+				} 	
 			}
 		}
 		
@@ -213,10 +212,22 @@ public class GameClient implements Runnable{
 			int newY = Integer.parseInt(playerInfo[5]);
 			float brushSize = Float.parseFloat(playerInfo[6]);
 			Color color = null;
-			if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-				color = Color.RED;
-			}else{
-				color = Color.BLACK;
+			String str_color = playerInfo[7].trim();
+			//System.out.println("String color:" + str_color);
+			if(str_color.equals("java.awt.Color[r=255,g=0,b=0]")){
+				color = Color.red;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=255]")){
+				color = Color.blue;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=0]")){
+				color = Color.yellow;
+			}else if (str_color.equals("java.awt.Color[r=0,g=255,b=0]")){
+				color = Color.green;
+			}else if (str_color.equals("java.awt.Color[r=255,g=0,b=255]")){
+				color = Color.magenta;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=255]")){
+				color = Color.white;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=0]")){
+				color = Color.black;
 			}
 			gui.getDrawingArea().getGraphicsObject().setPaint(color);
 			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
