@@ -22,48 +22,59 @@ public class DrawingArea2 extends JComponent{
 	private float brushSize = 3.0f;
 	private Color brushColor = Color.black;
 
+	private Boolean playing = true;
+
 	public DrawingArea2(GameClient client){
 		this.client = client;
 		setDoubleBuffered(false);
-		addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				
-				oldX = e.getX();
-				oldY = e.getY();
-				newX = oldX;
-				newY = oldY;
-				client.sendGameData("PLAYER " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
-				graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-				graphicsObject.drawLine(oldX, oldY, oldX, oldY);
-				
-				repaint();
-			}
-		});
-		addMouseMotionListener(new MouseMotionListener(){
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				newX = e.getX();
-				newY = e.getY();
-				//System.out.println("brush color: " + brushColor);
-				
-				if(graphicsObject != null){
-
-					client.sendGameData("PLAYERA " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
-					graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-					graphicsObject.drawLine(oldX, oldY, newX, newY);
-					
-					repaint();
-					oldX = newX;
-					oldY = newY;
-				}
-			}
-			@Override
-			public void mouseMoved(MouseEvent e) {}	
-		});
 		
+				addMouseListener(new MouseAdapter(){
+					public void mousePressed(MouseEvent e){
+						
+						oldX = e.getX();
+						oldY = e.getY();
+						newX = oldX;
+						newY = oldY;
+						
+						if(playing == true){
+							client.sendGameData("PLAYER " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
+							graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+							graphicsObject.drawLine(oldX, oldY, oldX, oldY);
+						} 						
+							
+						repaint();
+												
+					}
+				});
+				addMouseMotionListener(new MouseMotionListener(){
+
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						newX = e.getX();
+						newY = e.getY();
+						//System.out.println("brush color: " + brushColor);
+						
+						if(graphicsObject != null){
+
+							if(playing == true){
+							client.sendGameData("PLAYERA " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
+							graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+							graphicsObject.drawLine(oldX, oldY, newX, newY);
+							}
+							repaint();
+							oldX = newX;
+							oldY = newY;
+						}
+					}
+					@Override
+					public void mouseMoved(MouseEvent e) {}	
+				});
+			
+			
+	
 	}
 	
+	//sets up the drawing area
 	protected void paintComponent(Graphics g){
 		if(image == null){
 			image = createImage(getSize().width,getSize().height);
@@ -134,6 +145,16 @@ public class DrawingArea2 extends JComponent{
 		//System.out.println("White brush: " + brushColor);
 	}
 
+	/// SET PLAYER ///
+	public void setEnableDrawingArea(){
+		//code to enable drawing area
+		playing = true;
+	}
+
+	public void setDisableDrawingArea(){
+		//code to disable drawing area
+		playing = false;
+	}
 
 	//// BRUSH SIZES SETTINGS ////
 

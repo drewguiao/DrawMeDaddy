@@ -105,18 +105,20 @@ public class GameClient implements Runnable{
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
 				}else if(serverData.startsWith("PLAYER")){
-					translateCoordinateData(serverData);
+						translateCoordinateData(serverData,true);	
+					
 				}else if(serverData.startsWith("PLAYERA")){
-					translateCoordinateData(serverData);
+						translateCoordinateData(serverData,true);
+					
 				}else if(serverData.startsWith("ARTIST")){
 					String[] artistInfo = serverData.split(" ");
 					String artist = artistInfo[1];
 					if(artist.equals(playerName)){
 						isArtist = true;
-						//enableDrawingArea();
+						enableDrawingArea();
 					}else{
 						isArtist = false;
-						//disableDrawingArea();
+						disableDrawingArea();
 					}
 				}else if(serverData.startsWith("SCORELIST")){
 					translateScoreData(serverData);
@@ -200,8 +202,16 @@ public class GameClient implements Runnable{
 		}
 		return true;
 	}
+
+	public void enableDrawingArea(){
+		this.gui.getDrawingArea().setEnableDrawingArea();
+	}
+
+	public void disableDrawingArea(){
+		this.gui.getDrawingArea().setDisableDrawingArea();
+	}
 	
-	private void translateCoordinateData(String serverData){
+	private void translateCoordinateData(String serverData, Boolean isArtist){
 		String[] playersInfo = serverData.split(":");
 		for(int i = 0; i< playersInfo.length;i++){
 			String[] playerInfo = playersInfo[i].split(" ");
@@ -229,6 +239,7 @@ public class GameClient implements Runnable{
 			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=0]")){
 				color = Color.black;
 			}
+
 			gui.getDrawingArea().getGraphicsObject().setPaint(color);
 			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 			gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);

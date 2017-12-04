@@ -297,10 +297,9 @@ public class DaddyGUI{
             drawingArea.setBrushMedium();
          }else if(e.getSource() == largeButton){
             drawingArea.setBrushLarge();
+         }else if(e.getSource() == eraseButton){
+            drawingArea.eraseDrawing();
          }
-         // else if(e.getSource() == eraseButton){
-         //    drawingArea.eraseDrawing();
-         // }
          
       }
    };
