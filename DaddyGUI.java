@@ -268,7 +268,7 @@ public class DaddyGUI{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				drawingArea.clear();
-				client.sendGameData("PLAYERCLEAR");
+				client.sendGameData("clearDrawingArea");
 				drawingArea.repaint();
 			}
 		};

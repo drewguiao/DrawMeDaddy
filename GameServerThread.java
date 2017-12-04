@@ -86,7 +86,6 @@ public class GameServerThread extends Thread implements Constants{
 				game.update(tokens[1],player);
 				System.out.println("Player connected "+tokens[1]);
 				broadcast("CONNECTED "+tokens[1]);
-				// change limit
 				playerCount++;
 				if(playerCount == playerLimit){
 					gameStatus=GAME_START;
@@ -108,69 +107,36 @@ public class GameServerThread extends Thread implements Constants{
 				numOfStages = game.getNumOfPlayers();
 				broadcast("Round "+round+" Stage "+(stage+1)+"/"+numOfStages);
 				broadcast("START");
-				broadcast("PLAYERCLEAR");
+				broadcast("clearDrawingArea");
 				broadcast("ARTIST "+game.getRandomPlayer());
 				String wordToGuess = suitWord();
 				broadcast(wordToGuess);
 				stage++;
-
-				// stage ++;
-				// if stage = numOfPlayahs
-				// reset stage
-				// round++
-				// if round = 3
-				// get status
 				gameStatus = IN_PROGRESS;
 				
 				
 			}
 			break;
 		case IN_PROGRESS:
-			//select word from bag of words
-			//display to user
 			if(playerData.startsWith("nextArtistPlease")){
 				gameStatus = GAME_START;
 			}else if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
 
 				broadcast(this.game.getScoreList());
-			}else if(playerData.startsWith("PLAYERCLEAR")){
+			}else if(playerData.startsWith("clearDrawingArea")){
 				String message = playerData;
 				broadcast(message);
-			}else if(playerData.startsWith("PLAYER")){
-				String[] playerInfo = playerData.split(" ");
-				String playerName = playerInfo[1];
-				
-				int x = Integer.parseInt(playerInfo[2].trim());
-				int y = Integer.parseInt(playerInfo[3].trim());
-				int newX = Integer.parseInt(playerInfo[4].trim());
-				int newY = Integer.parseInt(playerInfo[5].trim());
-				float brushSize = Float.parseFloat(playerInfo[6].trim());
-				Color color = null;
-				if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-					color = Color.RED;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=0]")){
-					color = Color.BLACK;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=255]")){
-					color = Color.BLUE;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=255,b=0]")){
-					color = Color.GREEN;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=255,b=0]")){
-					color = Color.YELLOW;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=255]")){
-					color = Color.MAGENTA;
-				}
-				GamePlayer player = game.getPlayers().get(playerName);
-				
-				player.setX(x);
-				player.setY(y);
-				player.setNewX(newX);
-				player.setNewY(newY);
-				player.setBrushColor(color);
-				player.setBrushSize(brushSize);
-			
-				// game.update(playerName, player);
-				broadcast(game.toString());
+			}else if(playerData.startsWith("COORDINATE")){
+				String[] coordinateInfo = playerData.split(" ");
+				String identifier = coordinateInfo[0];
+				int oldX = Integer.parseInt(coordinateInfo[1]);
+				int oldY = Integer.parseInt(coordinateInfo[2]);
+				int newX = Integer.parseInt(coordinateInfo[3]);
+				int newY = Integer.parseInt(coordinateInfo[4]);
+				float brushSize = Float.parseFloat(coordinateInfo[5]);
+				Color color = Color.BLACK;
+				broadcast(identifier+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+color);
 			}else if(playerData.startsWith("addScore")){
 				String[] playerInfo = playerData.split(" ");
 				String name = playerInfo[1];
@@ -210,7 +176,7 @@ public class GameServerThread extends Thread implements Constants{
 	}
 
 	private String suitWord(){
-		String wordIndicator = "WordToGuess ";
+		String wordIndicator = "WORDTOGUESS ";
 		String word = this.getter.fetch();
 		String wordToGuess = wordIndicator + word;
 		return wordToGuess;

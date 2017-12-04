@@ -101,12 +101,10 @@ public class GameClient implements Runnable{
 			}else if(gameConnected){
 				if(serverData.startsWith("divideTime")){
 					this.gui.getTimer().divide();
-				}else if(serverData.startsWith("PLAYERCLEAR")){
+				}else if(serverData.startsWith("clearDrawingArea")){
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
-				}else if(serverData.startsWith("PLAYER")){
-					translateCoordinateData(serverData);
-				}else if(serverData.startsWith("PLAYERA")){
+				}else if(serverData.startsWith("COORDINATE")){
 					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("ARTIST")){
 					String[] artistInfo = serverData.split(" ");
@@ -121,7 +119,7 @@ public class GameClient implements Runnable{
 				}else if(serverData.startsWith("SCORELIST")){
 					translateScoreData(serverData);
 				}
-				else if(serverData.startsWith("WordToGuess")){
+				else if(serverData.startsWith("WORDTOGUESS")){
 					String[] wordInfo = serverData.split(" ");
 					this.wordToGuess = wordInfo[1];
 					enableWordHints = true;
@@ -134,7 +132,6 @@ public class GameClient implements Runnable{
 					this.gui.startTimer();
 					dataCounter = 0;
 				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
-					System.out.println("UPDATE NA BUI");
 					ensureBroadcastOnce("nextArtistPlease");
 				} else if(serverData.startsWith("FINALSCORELIST")){
 					translateFinalScoreData(serverData);
@@ -158,7 +155,6 @@ public class GameClient implements Runnable{
 	}
 	
 	public void handle(String message) {
-		// TODO Auto-generated method stub
 		gui.getChatArea().append(message+"\n");
 	}
 	
@@ -183,7 +179,6 @@ public class GameClient implements Runnable{
 		String formalMessage = message.toUpperCase();
 		String formalWordToGuess = "";
 		if(wordToGuess.equals("")){
-			System.out.println("POTA BAKIT KA DI NAGRERETURN");
 			return true;
 		}else{
 			formalWordToGuess = wordToGuess.toUpperCase();
@@ -207,26 +202,19 @@ public class GameClient implements Runnable{
 	}
 	
 	private void translateCoordinateData(String serverData){
-		String[] playersInfo = serverData.split(":");
-		for(int i = 0; i< playersInfo.length;i++){
-			String[] playerInfo = playersInfo[i].split(" ");
-			String playerName = playerInfo[1];
-			int x = Integer.parseInt(playerInfo[2]);
-			int y = Integer.parseInt(playerInfo[3]);
-			int newX = Integer.parseInt(playerInfo[4]);
-			int newY = Integer.parseInt(playerInfo[5]);
-			float brushSize = Float.parseFloat(playerInfo[6]);
-			Color color = null;
-			if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
-				color = Color.RED;
-			}else{
-				color = Color.BLACK;
-			}
+			String[] coordinateInfo = serverData.split(" ");
+			int x = Integer.parseInt(coordinateInfo[1]);
+			int y = Integer.parseInt(coordinateInfo[2]);
+			int newX = Integer.parseInt(coordinateInfo[3]);
+			int newY = Integer.parseInt(coordinateInfo[4]);
+			float brushSize = Float.parseFloat(coordinateInfo[5]);
+			Color color = Color.BLACK;
+	
 			gui.getDrawingArea().getGraphicsObject().setPaint(color);
 			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 			gui.getDrawingArea().getGraphicsObject().drawLine(x,y,newX,newY);
 			gui.getDrawingArea().repaint();
-		}
+		
 	}
 	private void translateScoreData(String serverData){
 		String playersScore = "";
