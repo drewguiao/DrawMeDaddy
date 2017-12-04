@@ -30,6 +30,17 @@ public class GameState {
 		}
 		return retVal;
 	}
+	
+	public String getScoreList(){
+		String return_val ="SCORELIST ";
+		for(Iterator<?> ite = scoreList.keySet().iterator();ite.hasNext();){
+			String name = (String)ite.next();
+			int score = scoreList.get(name);
+			return_val+= name+" "+score+":SCORELIST ";
+		}
+
+		return return_val;
+	}
 
 	public Map<String, GamePlayer> getPlayers(){
 		return players;
