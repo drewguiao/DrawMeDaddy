@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 public class GameClient implements Runnable{
 	
@@ -32,6 +33,7 @@ public class GameClient implements Runnable{
 	private boolean isArtist = false;
 	private boolean enableDrawingArea = true;
 	private int dataCounter = 0;
+	private int timerCounter = 0;
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
 		this.serverName = serverName;
@@ -101,6 +103,7 @@ public class GameClient implements Runnable{
 			}else if(gameConnected){
 				if(serverData.startsWith("divideTime")){
 					this.gui.getTimer().divide();
+					timerCounter = 0;
 				}else if(serverData.startsWith("clearDrawingArea")){
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
@@ -129,16 +132,37 @@ public class GameClient implements Runnable{
 						displayWordAsUnderscores();
 					}
 					this.gui.initializeTimer();
-					this.gui.startTimer(20);
+					this.gui.startTimer(80);
 					dataCounter = 0;
 				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
 					ensureBroadcastOnce("nextArtistPlease");
 				} else if(serverData.startsWith("FINALSCORELIST")){
 					translateFinalScoreData(serverData);
-				} 	
+				}else if(wordToGuess.length()!=0 && this.gui.getTimer().getRemainingTime()%wordToGuess.length() == 0 && timerCounter == 0){
+					timerCounter++;
+					showLetter();
+				}
 			}
 		}
 		
+	}
+
+	private void showLetter(){
+		// wordToGuess
+		Random randomizer = new Random();
+		
+		int index = randomizer.nextInt(wordToGuess.length());
+		String toShow="";
+		for(int i = 1; i < wordToGuess.length();i++){
+			if(i-1 == index){
+				toShow+=wordToGuess.charAt(index)+" ";
+			}
+			toShow+="- ";
+		}
+		if(!isArtist){
+			this.gui.getWordToGuessField().setText(toShow);
+		}
+		// timerCounter = 0;
 	}
 
 	private void ensureBroadcastOnce(String message){
