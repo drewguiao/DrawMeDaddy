@@ -7,7 +7,7 @@ public class CountdownTimer implements Runnable{
 	private final int period = 1000;
 	Thread t;
 	
-	private int remainingTime;
+	private int remainingTime = 999;
 	
 	private int timeLimit = 0;
 	private Timer timer;
@@ -41,6 +41,7 @@ public class CountdownTimer implements Runnable{
 	private void setInterval(){
 		if(remainingTime == 0){
 			timer.cancel();
+			timer.purge();
 		}
 		this.remainingTime = remainingTime - 1;
 
