@@ -12,8 +12,9 @@ public class CountdownTimer implements Runnable{
 	private int timeLimit = 0;
 	private Timer timer;
 	private JTextField timerField;
-
-	public CountdownTimer(JTextField timerField){
+	public CountdownTimer(int timeLimit,JTextField timerField){
+		this.timeLimit = timeLimit;
+		this.remainingTime = timeLimit;
 		this.timer = new Timer();
 		this.timerField = timerField;
 		
@@ -27,8 +28,7 @@ public class CountdownTimer implements Runnable{
 		return this.remainingTime;
 	}
 	
-	public void start(int timeStart){
-		this.remainingTime = timeStart;
+	public void start(){
 		t = new Thread(this);
 		t.start();
 		
@@ -40,7 +40,6 @@ public class CountdownTimer implements Runnable{
 	
 	private void setInterval(){
 		if(remainingTime == 0){
-			t.stop();
 			timer.cancel();
 			timer.purge();
 		}

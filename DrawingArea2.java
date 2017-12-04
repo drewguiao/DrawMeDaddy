@@ -99,8 +99,6 @@ public class DrawingArea2 extends JComponent{
 		graphicsObject.setPaint(Color.white);
 		graphicsObject.fillRect(0,0,getSize().width,getSize().height);
 		graphicsObject.setPaint(Color.black);
-		newX = oldX;
-		newY = oldY;
 		repaint();
 	}
 	
