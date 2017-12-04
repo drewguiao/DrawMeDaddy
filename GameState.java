@@ -31,6 +31,16 @@ public class GameState {
 		return retVal;
 	}
 	
+	public String getScoreList(){
+		String return_val ="";
+		for(Iterator<?> ite = scoreList.keySet().iterator();ite.hasNext();){
+			String name = (Strng)ite.next();
+			return_val+= name+" ";
+		}
+
+		return return_val;
+	}
+
 	public Map<String, GamePlayer> getPlayers(){
 		return players;
 	}

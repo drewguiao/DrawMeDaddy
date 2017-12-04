@@ -216,11 +216,11 @@ public class GameClient implements Runnable{
 	}
 
 	private void enableDrawingArea(){
-		this.gui.getDrawingPanel().setEnabled(true);
+		//this.gui.getDrawingPanel().setEnabled(true);
 	}
 
 	private void disableDrawingArea(){
-		this.gui.getDrawingPanel().setEnabled(false);
+		//this.gui.getDrawingPanel().setEnabled(false);
 	}
 
 	private void displayWordAsUnderscores(){

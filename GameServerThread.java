@@ -106,7 +106,7 @@ public class GameServerThread extends Thread implements Constants{
 				Color color = null;
 				if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
 					color = Color.RED;
-				}else{
+				}else {
 					color = Color.BLACK;
 				}
 				GamePlayer player = game.getPlayers().get(playerName);
