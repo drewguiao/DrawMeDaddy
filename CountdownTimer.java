@@ -33,6 +33,10 @@ public class CountdownTimer implements Runnable{
 		t.start();
 		
 	}
+public void cancel(){
+	timer.cancel();
+}
+
 	
 	public void divide(){
 		this.remainingTime = this.remainingTime / 2;

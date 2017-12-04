@@ -42,6 +42,7 @@ public class GameServerThread extends Thread implements Constants{
 	private int numOfRounds = 3;
 	private int stage = 0;
 	private int round = 0;
+	private int guessedRight = 0;
 	public GameServerThread(GameServer gameServer, int portNumber, int playerLimit){
 		this.gameServer = gameServer;
 		this.portNumber = portNumber;
@@ -94,6 +95,12 @@ public class GameServerThread extends Thread implements Constants{
 			}
 			break;
 		case GAME_START:
+			if(playerData.startsWith("addScore")){
+				String[] playerInfo = playerData.split(" ");
+				String name = playerInfo[1];
+				int score = Integer.parseInt(playerInfo[2]);
+				game.addScore(name,score);
+			}
 			if(stage == numOfStages){
 				round++;
 				stage = 0;
@@ -113,17 +120,28 @@ public class GameServerThread extends Thread implements Constants{
 				broadcast(wordToGuess);
 				stage++;
 				gameStatus = IN_PROGRESS;
-				
-				
 			}
 			break;
 		case IN_PROGRESS:
 			if(playerData.startsWith("nextArtistPlease")){
 				gameStatus = GAME_START;
-			}else if(playerData.startsWith("divideTime")){
-				broadcast("divideTime");
-
+			}else if(playerData.startsWith("addScore")){
+				String[] playerInfo = playerData.split(" ");
+				String name = playerInfo[1];
+				int score = Integer.parseInt(playerInfo[2]);
+				game.addScore(name,score);
 				broadcast(this.game.getScoreList());
+			}else if(playerData.startsWith("divideTime")){
+				guessedRight++;
+				if(guessedRight == game.getNumOfPlayers()-1){
+					
+					gameStatus = GAME_START;
+					broadcast("rewardArtist");
+					guessedRight = 0;
+				}else{
+					broadcast("divideTime");	
+				}
+				
 			}else if(playerData.startsWith("clearDrawingArea")){
 				String message = playerData;
 				broadcast(message);
@@ -137,11 +155,6 @@ public class GameServerThread extends Thread implements Constants{
 				float brushSize = Float.parseFloat(coordinateInfo[5]);
 				Color color = Color.BLACK;
 				broadcast(identifier+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+color);
-			}else if(playerData.startsWith("addScore")){
-				String[] playerInfo = playerData.split(" ");
-				String name = playerInfo[1];
-				int score = Integer.parseInt(playerInfo[2]);
-				game.addScore(name,score);
 			}
 			break;
 		case GAME_END: System.out.println("GAME ENDS!!!!!!!");   

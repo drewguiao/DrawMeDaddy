@@ -34,6 +34,7 @@ public class GameClient implements Runnable{
 	private boolean enableDrawingArea = true;
 	private int dataCounter = 0;
 	private int timerCounter = 0;
+	private String currentArtist = "";
 	public GameClient(String serverName, int portNumber, String playerName) throws IOException{
 		this.playerName = playerName;
 		this.serverName = serverName;
@@ -112,6 +113,7 @@ public class GameClient implements Runnable{
 				}else if(serverData.startsWith("ARTIST")){
 					String[] artistInfo = serverData.split(" ");
 					String artist = artistInfo[1];
+					currentArtist = artist;
 					if(artist.equals(playerName)){
 						isArtist = true;
 						enableDrawingArea();
@@ -121,8 +123,10 @@ public class GameClient implements Runnable{
 					}
 				}else if(serverData.startsWith("SCORELIST")){
 					translateScoreData(serverData);
-				}
-				else if(serverData.startsWith("WORDTOGUESS")){
+				}else if(serverData.startsWith("rewardArtist")){
+					sendGameData("addScore "+currentArtist+" "+10);
+					this.gui.getTimer().cancel();
+				}else if(serverData.startsWith("WORDTOGUESS")){
 					String[] wordInfo = serverData.split(" ");
 					this.wordToGuess = wordInfo[1];
 					enableWordHints = true;
