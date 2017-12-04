@@ -138,8 +138,7 @@ public class GameClient implements Runnable{
 					ensureBroadcastOnce("nextArtistPlease");
 				} else if(serverData.startsWith("FINALSCORELIST")){
 					translateFinalScoreData(serverData);
-				} 
-				
+				} 	
 			}
 		}
 		

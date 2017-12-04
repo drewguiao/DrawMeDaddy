@@ -131,8 +131,9 @@ public class DrawingArea2 extends JComponent{
 		brushSize = 20.0f;
 		brushColor = Color.white;
 		graphicsObject.setPaint(Color.white);
-		System.out.println("White brush: " + brushColor);
+		//System.out.println("White brush: " + brushColor);
 	}
+
 
 	//// BRUSH SIZES SETTINGS ////
 
