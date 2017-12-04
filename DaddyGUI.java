@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.AdjustmentEvent;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
@@ -20,6 +22,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.JScrollPane;
+import java.awt.GridLayout;
+import java.awt.Font;
 
 public class DaddyGUI{
 	private JFrame frame;
@@ -27,9 +32,11 @@ public class DaddyGUI{
 	private Container content;
 	private DrawingArea2 drawingArea;
 
+	private JScrollPane chatScrollPane;
+
 	private JTextField inputField,timerField,wordToGuessField;
-	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel;
-	private JTextArea chatArea,playerListField;
+	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel,drawingPanel;
+	private JTextArea chatArea,playerListArea;
 	private String playerName;
 	private JButton eraseButton, sendButton, clearButton, toRedButton, toBlackButton, toBlueButton, toGreenButton, toYellowButton, toMagentaButton, smallButton, mediumButton, largeButton;
 	private CountdownTimer timer;
@@ -37,17 +44,83 @@ public class DaddyGUI{
 	public DaddyGUI(GameClient client, String playerName){
 		this.playerName = playerName;
 		this.frame = new JFrame("DrawMeDaddy:" +playerName);
-		this.frame.setSize(800, 800);
+		this.frame.setSize(1000, 1000);
 		this.client = client;
 		this.playerName = playerName;
 
 
 		content = frame.getContentPane();
-		content.setLayout(new BorderLayout());
+		content.setLayout(new GridLayout(0,3));
 		
+		initializeTimerAndPlayerListPanel();
+		initializeDrawingPanel();
+		initializeChatPanel();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
 
-		// Control Panel
-		///// BUTTON ICONS ///// 
+	private void initializeChatPanel(){
+		chatPanel = new JPanel();
+		chatPanel.setLayout(new BorderLayout());
+
+		chatArea = new JTextArea(30,30);
+		chatArea.setEditable(false);
+		chatArea.setLineWrap(true);
+		chatArea.setBackground(Color.black);
+		chatArea.setForeground(Color.white);
+		chatScrollPane = new JScrollPane(chatArea);
+		chatScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
+       		public void adjustmentValueChanged(AdjustmentEvent e) {  
+           		e.getAdjustable().setValue(e.getAdjustable().getMaximum());  
+        	}
+  		});
+		displayInstructions();
+
+		inputField = new JTextField(10);
+		inputField.addKeyListener(sendViaEnter());
+		sendButton = new JButton("SEND");
+		sendButton.addActionListener(sendViaButton());
+
+		chatPanel.add(chatScrollPane,BorderLayout.NORTH);
+		chatPanel.add(inputField,BorderLayout.CENTER);
+		chatPanel.add(sendButton,BorderLayout.EAST);
+
+		content.add(chatPanel);
+	}
+
+	private void initializeTimerAndPlayerListPanel(){
+		timerAndPlayerListPanel = new JPanel();
+		timerAndPlayerListPanel.setLayout(new GridLayout(3,0));
+		
+		timerField = new JTextField(10);
+		timerField.setEditable(false);
+		Font timerFont = new Font("timerFont",1,100);
+		timerField.setFont(timerFont);
+		// timer = new CountdownTimer(80);
+
+		wordToGuessField = new JTextField(5);
+		wordToGuessField.setEditable(false);
+		Font wordToGuessFont = new Font("wordToGuessFont",1,40);
+		wordToGuessField.setFont(wordToGuessFont);
+		
+		playerListArea = new JTextArea(30,30);
+		playerListArea.setEditable(false);
+		
+		timerAndPlayerListPanel.add(wordToGuessField);
+		timerAndPlayerListPanel.add(playerListArea);
+		timerAndPlayerListPanel.add(timerField);
+
+		content.add(timerAndPlayerListPanel);
+
+		timer = new CountdownTimer(timerField);
+	}
+
+	private void initializeDrawingPanel(){
+		drawingPanel = new JPanel();
+		drawingPanel.setLayout(new BorderLayout());
+
+		controlPanel = new JPanel();
+
 		ImageIcon icon = new ImageIcon("icons/red.png");
 	    Image image = icon.getImage(); // transform it 
 	    Image newimg = image.getScaledInstance(20, 20,java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
@@ -103,14 +176,7 @@ public class DaddyGUI{
 	    Image newEraserIcon = eraserIcon.getScaledInstance(20,20,java.awt.Image.SCALE_SMOOTH);
 	    eraser = new ImageIcon(newEraserIcon);
 
-	    JPanel controlPanel = new JPanel();
-	    JPanel wordPanel = new JPanel();
-	    JLabel wordLabel = new JLabel("GUESS ME");
-	    wordPanel.add(wordLabel);
-	    
-		controlPanel = new JPanel();
-		clearButton = new JButton(clearIcon);
-		//Brush Color
+	    clearButton = new JButton(clearIcon);
 	    toRedButton = new JButton(icon);
 	    toBlackButton = new JButton(icon2);
 	    toBlueButton = new JButton(icon3);
@@ -118,7 +184,6 @@ public class DaddyGUI{
 	    toYellowButton = new JButton(icon5);
 	    toMagentaButton = new JButton(icon6);
 	    eraseButton = new JButton(eraser);
-
 	    //Adjusting button sizes
 	    toBlackButton.setPreferredSize(new Dimension(20,20));
 	    toRedButton.setPreferredSize(new Dimension(20,20));
@@ -214,41 +279,14 @@ public class DaddyGUI{
 	    controlPanel.add(largeButton);
 	    controlPanel.add(eraseButton);
 
-		// Chat Panel
-		chatPanel = new JPanel();
-		chatPanel.setLayout(new BorderLayout());
-		
-
-		drawingArea = new DrawingArea2(this.client);
+	    drawingArea = new DrawingArea2(this.client);
 		drawingArea.setBackground(Color.WHITE);
-		
-		inputField = new JTextField(10);
-		inputField.addKeyListener(sendViaEnter());
-		
-		sendButton = new JButton("Send");
-		sendButton.addActionListener(sendViaButton());
-		
-		chatArea = new JTextArea(40,30);
-		chatArea.setEditable(false);
-		chatArea.setLineWrap(true);
-		chatArea.setBackground(Color.black);
-		chatArea.setForeground(Color.white);
-		displayInstructions();
 
-		chatPanel.add(inputField,BorderLayout.CENTER);
-		chatPanel.add(sendButton,BorderLayout.EAST);
-		chatPanel.add(chatArea,BorderLayout.NORTH);
-		
-		initializeTimerAndPlayerListPanel();
-
-
-		content.add(timerAndPlayerListPanel, BorderLayout.WEST);
-		content.add(controlPanel,BorderLayout.NORTH);
-		content.add(chatPanel,BorderLayout.EAST);
-		content.add(drawingArea,BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		drawingPanel.add(controlPanel,BorderLayout.NORTH);
+		drawingPanel.add(drawingArea, BorderLayout.CENTER);
+		content.add(drawingPanel);
 	}
+
 
 
 	private ActionListener clearAreaViaButton(){
@@ -256,7 +294,7 @@ public class DaddyGUI{
 			@Override
 			public void actionPerformed(ActionEvent e){
 				drawingArea.clear();
-				client.sendGameData("PLAYERCLEAR");
+				client.sendGameData("clearDrawingArea");
 				drawingArea.repaint();
 			}
 		};
@@ -351,43 +389,23 @@ public class DaddyGUI{
 		return this.drawingArea;
 	}
 
-	private void initializeTimerAndPlayerListPanel(){
-		timerAndPlayerListPanel = new JPanel();
-		timerAndPlayerListPanel.setLayout(new BorderLayout());
-		
-		timerField = new JTextField(5);
-		timerField.setEditable(false);
-		// timer = new CountdownTimer(80);
 
-		wordToGuessField = new JTextField(5);
-		wordToGuessField.setEditable(false);
 
-		playerListField = new JTextArea(10,10);
-		playerListField.setEditable(false);
-		
-		timerAndPlayerListPanel.add(wordToGuessField,BorderLayout.CENTER);
-		timerAndPlayerListPanel.add(playerListField, BorderLayout.WEST);
-		timerAndPlayerListPanel.add(timerField,BorderLayout.NORTH);
-		content.add(timerAndPlayerListPanel,BorderLayout.WEST);
-
-		timer = new CountdownTimer(20,timerField);
-
-	}
 
 	public JTextField getTimerField(){
 		return this.timerField;
 	}
 
 	public void initializeTimer(){
-		timer = new CountdownTimer(20,timerField);
+		timer = new CountdownTimer(timerField);
 	}
 
-	public void startTimer(){
-		timer.start();
+	public void startTimer(int timeStart){
+		timer.start(timeStart);
 	}
 
 	public JTextArea getPlayerListField(){
-		return this.playerListField;
+		return this.playerListArea;
 	}
 
 	public JTextField getWordToGuessField(){
