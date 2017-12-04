@@ -150,8 +150,8 @@ public class GameServerThread extends Thread implements Constants{
 			GamePlayer player=game.getPlayers().get(name);			
 			System.out.println(message);
 			send(player,message);
-
 		}
+
 	}
 
 	private String suitWord(){
