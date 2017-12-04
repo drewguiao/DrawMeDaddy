@@ -37,7 +37,7 @@ public class DrawingArea2 extends JComponent{
 						newY = oldY;
 						
 						if(playing == true){
-							client.sendGameData("PLAYER " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
+							client.sendGameData("COORDINATE "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
 							graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 							graphicsObject.drawLine(oldX, oldY, oldX, oldY);
 						} 						
@@ -57,7 +57,7 @@ public class DrawingArea2 extends JComponent{
 						if(graphicsObject != null){
 
 							if(playing == true){
-							client.sendGameData("PLAYERA " +client.getPlayerName()+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
+							client.sendGameData("COORDINATEB "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+brushColor);
 							graphicsObject.setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 							graphicsObject.drawLine(oldX, oldY, newX, newY);
 							}

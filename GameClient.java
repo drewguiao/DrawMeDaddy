@@ -104,11 +104,6 @@ public class GameClient implements Runnable{
 				}else if(serverData.startsWith("clearDrawingArea")){
 					gui.getDrawingArea().clear();
 					gui.getDrawingArea().repaint();
-				}else if(serverData.startsWith("PLAYER")){
-						translateCoordinateData(serverData,true);	
-					
-				}else if(serverData.startsWith("PLAYERA")){
-						translateCoordinateData(serverData,true);
 				}else if(serverData.startsWith("COORDINATE")){
 					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("ARTIST")){
