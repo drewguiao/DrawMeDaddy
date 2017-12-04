@@ -100,7 +100,7 @@ public class DaddyGUI{
 
 		wordToGuessField = new JTextField(5);
 		wordToGuessField.setEditable(false);
-		Font wordToGuessFont = new Font("wordToGuessFont",1,50);
+		Font wordToGuessFont = new Font("wordToGuessFont",1,40);
 		wordToGuessField.setFont(wordToGuessFont);
 		
 		playerListArea = new JTextArea(30,30);
@@ -112,7 +112,7 @@ public class DaddyGUI{
 
 		content.add(timerAndPlayerListPanel);
 
-		timer = new CountdownTimer(20,timerField);
+		timer = new CountdownTimer(timerField);
 	}
 
 	private void initializeDrawingPanel(){
@@ -395,11 +395,11 @@ public class DaddyGUI{
 	}
 
 	public void initializeTimer(){
-		timer = new CountdownTimer(20,timerField);
+		timer = new CountdownTimer(timerField);
 	}
 
-	public void startTimer(){
-		timer.start();
+	public void startTimer(int timeStart){
+		timer.start(timeStart);
 	}
 
 	public JTextArea getPlayerListField(){

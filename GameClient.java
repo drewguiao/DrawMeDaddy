@@ -129,7 +129,7 @@ public class GameClient implements Runnable{
 						displayWordAsUnderscores();
 					}
 					this.gui.initializeTimer();
-					this.gui.startTimer();
+					this.gui.startTimer(20);
 					dataCounter = 0;
 				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
 					ensureBroadcastOnce("nextArtistPlease");
