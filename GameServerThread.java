@@ -153,7 +153,27 @@ public class GameServerThread extends Thread implements Constants{
 				int newX = Integer.parseInt(coordinateInfo[3]);
 				int newY = Integer.parseInt(coordinateInfo[4]);
 				float brushSize = Float.parseFloat(coordinateInfo[5]);
-				Color color = Color.BLACK;
+				//Color color = Color.BLACK;
+				Color color = null;
+				String str_color = coordinateInfo[6].trim();
+				//System.out.println("Color: " + str_color);
+
+				if(str_color.equals("java.awt.Color[r=255,g=0,b=0]")){
+					color = Color.red;
+				}else if (str_color.equals("java.awt.Color[r=0,g=0,b=255]")){
+					color = Color.blue;
+				}else if (str_color.equals("java.awt.Color[r=255,g=255,b=0]")){
+					color = Color.yellow;
+				}else if (str_color.equals("java.awt.Color[r=0,g=255,b=0]")){
+					color = Color.green;
+				}else if (str_color.equals("java.awt.Color[r=255,g=0,b=255]")){
+					color = Color.magenta;
+				}else if (str_color.equals("java.awt.Color[r=255,g=255,b=255]")){
+					color = Color.white;
+				}else if (str_color.equals("java.awt.Color[r=0,g=0,b=0]")){
+					color = Color.black;
+				}
+
 				broadcast(identifier+" "+oldX+" "+oldY+" "+newX+" "+newY+" "+brushSize+" "+color);
 			}
 			break;

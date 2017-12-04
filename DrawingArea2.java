@@ -52,7 +52,7 @@ public class DrawingArea2 extends JComponent{
 					public void mouseDragged(MouseEvent e) {
 						newX = e.getX();
 						newY = e.getY();
-						//System.out.println("brush color: " + brushColor);
+						System.out.println("brush color: " + brushColor);
 						
 						if(graphicsObject != null){
 

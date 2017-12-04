@@ -110,6 +110,8 @@ public class GameClient implements Runnable{
 					gui.getDrawingArea().repaint();
 				}else if(serverData.startsWith("COORDINATE")){
 					translateCoordinateData(serverData);
+				}else if(serverData.startsWith("COORDINATEB")){
+					translateCoordinateData(serverData);
 				}else if(serverData.startsWith("ARTIST")){
 					String[] artistInfo = serverData.split(" ");
 					String artist = artistInfo[1];
@@ -244,7 +246,29 @@ public class GameClient implements Runnable{
 			int newX = Integer.parseInt(coordinateInfo[3]);
 			int newY = Integer.parseInt(coordinateInfo[4]);
 			float brushSize = Float.parseFloat(coordinateInfo[5]);
-			Color color = Color.BLACK;
+			//Color color = Color.BLACK;
+			Color color = null;
+			String str_color = coordinateInfo[6].trim();
+			//System.out.println("Color: " + str_color);
+			
+			//System.out.println("String color:" + str_color);
+			if(str_color.equals("java.awt.Color[r=255,g=0,b=0]")){
+				color = Color.red;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=255]")){
+				color = Color.blue;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=0]")){
+				color = Color.yellow;
+			}else if (str_color.equals("java.awt.Color[r=0,g=255,b=0]")){
+				color = Color.green;
+			}else if (str_color.equals("java.awt.Color[r=255,g=0,b=255]")){
+				color = Color.magenta;
+			}else if (str_color.equals("java.awt.Color[r=255,g=255,b=255]")){
+				color = Color.white;
+			}else if (str_color.equals("java.awt.Color[r=0,g=0,b=0]")){
+				color = Color.black;
+			}
+
+			//System.out.println("Color: " + color);
 
 			gui.getDrawingArea().getGraphicsObject().setPaint(color);
 			gui.getDrawingArea().getGraphicsObject().setStroke(new BasicStroke(brushSize,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
