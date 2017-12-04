@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
-public class DaddyGUI {
+public class DaddyGUI{
 	private JFrame frame;
 	private GameClient client;
 	private Container content;
@@ -208,8 +208,8 @@ public class DaddyGUI {
 	    controlPanel.add(toBlueButton);
 	    controlPanel.add(toGreenButton);
 	    controlPanel.add(toYellowButton);
-      controlPanel.add(toMagentaButton);
-      controlPanel.add(smallButton);
+     	controlPanel.add(toMagentaButton);
+      	controlPanel.add(smallButton);
 	    controlPanel.add(mediumButton);
 	    controlPanel.add(largeButton);
 	    controlPanel.add(eraseButton);

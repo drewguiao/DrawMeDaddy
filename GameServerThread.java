@@ -4,6 +4,27 @@ import java.io.*;
 import java.awt.Color;
 import java.util.Iterator;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.Socket;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 
 public class GameServerThread extends Thread implements Constants{
@@ -70,6 +91,7 @@ public class GameServerThread extends Thread implements Constants{
 				if(playerCount == playerLimit){
 					gameStatus=GAME_START;
 				}
+				broadcast(this.game.getScoreList());
 			}
 			break;
 		case GAME_START:
@@ -110,6 +132,8 @@ public class GameServerThread extends Thread implements Constants{
 				gameStatus = GAME_START;
 			}else if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
+
+				broadcast(this.game.getScoreList());
 			}else if(playerData.startsWith("PLAYERCLEAR")){
 				String message = playerData;
 				broadcast(message);
@@ -125,8 +149,16 @@ public class GameServerThread extends Thread implements Constants{
 				Color color = null;
 				if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=0]")){
 					color = Color.RED;
-				}else{
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=0]")){
 					color = Color.BLACK;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=255]")){
+					color = Color.BLUE;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=255,b=0]")){
+					color = Color.GREEN;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=255,b=0]")){
+					color = Color.YELLOW;
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=255]")){
+					color = Color.MAGENTA;
 				}
 				GamePlayer player = game.getPlayers().get(playerName);
 				
@@ -147,7 +179,10 @@ public class GameServerThread extends Thread implements Constants{
 			}
 			break;
 		case GAME_END: System.out.println("GAME ENDS!!!!!!!");
-			break;
+					   
+					   broadcast("FINAL"+this.game.getScoreList());
+					   gameStatus = WAITING_FOR_PLAYERS;
+						break;
 			}
 		}
 
@@ -171,8 +206,8 @@ public class GameServerThread extends Thread implements Constants{
 			GamePlayer player=game.getPlayers().get(name);			
 			System.out.println(message);
 			send(player,message);
-
 		}
+
 	}
 
 	private String suitWord(){

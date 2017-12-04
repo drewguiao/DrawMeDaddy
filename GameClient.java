@@ -40,7 +40,7 @@ public class GameClient implements Runnable{
 		connectDrawing();
 		start();
 	}
-
+	
 	private void connectChat(){
 		System.out.println("Establishing connection!");
 		try{
@@ -113,11 +113,13 @@ public class GameClient implements Runnable{
 					String artist = artistInfo[1];
 					if(artist.equals(playerName)){
 						isArtist = true;
-						enableDrawingArea();
+						//enableDrawingArea();
 					}else{
 						isArtist = false;
-						disableDrawingArea();
+						//disableDrawingArea();
 					}
+				}else if(serverData.startsWith("SCORELIST")){
+					translateScoreData(serverData);
 				}
 				else if(serverData.startsWith("WordToGuess")){
 					String[] wordInfo = serverData.split(" ");
@@ -134,6 +136,8 @@ public class GameClient implements Runnable{
 				}else if(this.gui.getTimer().getRemainingTime() == 0 && dataCounter == 0){
 					System.out.println("UPDATE NA BUI");
 					ensureBroadcastOnce("nextArtistPlease");
+				} else if(serverData.startsWith("FINALSCORELIST")){
+					translateFinalScoreData(serverData);
 				}
 				
 			}
@@ -220,6 +224,34 @@ public class GameClient implements Runnable{
 			gui.getDrawingArea().repaint();
 		}
 	}
+	private void translateScoreData(String serverData){
+		String playersScore = "";
+		String[] playersInfo = serverData.split(":");
+		for(int i =0; i < playersInfo.length-1;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int score = Integer.parseInt(playerInfo[2]);
+
+			playersScore+= playerName + " " + score + " " + "\n";
+
+		}
+		this.gui.getPlayerListField().setText(playersScore);
+	}
+
+	private void translateFinalScoreData(String serverData){
+		String playersScore = "";
+		String[] playersInfo = serverData.split(":");
+		for(int i =0; i < playersInfo.length-1;i++){
+			String[] playerInfo = playersInfo[i].split(" ");
+			String playerName = playerInfo[1];
+			int score = Integer.parseInt(playerInfo[2]);
+
+			playersScore+= playerName + " " + score + " " + "\n";
+
+		}
+		
+		FinalScore finale = new FinalScore(playersScore);
+	}
 
 	public void sendGameData(String message){
 		try{
@@ -230,14 +262,6 @@ public class GameClient implements Runnable{
 		}catch(Exception e){	
 			System.out.println(e.getMessage());
 		}
-	}
-
-	private void enableDrawingArea(){
-		// this.gui.getControlPanel();
-	}
-
-	private void disableDrawingArea(){
-		// this.gui.getControlPanel();
 	}
 
 	private void displayWordAsUnderscores(){
