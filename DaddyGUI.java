@@ -8,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.AdjustmentEvent;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.IOException;
@@ -20,12 +22,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.JScrollPane;
+
 
 public class DaddyGUI{
 	private JFrame frame;
 	private GameClient client;
 	private Container content;
 	private DrawingArea2 drawingArea;
+
+	private JScrollPane chatScrollPane;
 
 	private JTextField inputField,timerField,wordToGuessField;
 	private JPanel chatPanel,controlPanel,timerAndPlayerListPanel;
@@ -232,11 +238,18 @@ public class DaddyGUI{
 		chatArea.setLineWrap(true);
 		chatArea.setBackground(Color.black);
 		chatArea.setForeground(Color.white);
+		chatScrollPane = new JScrollPane(chatArea);
+		chatScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
+       		public void adjustmentValueChanged(AdjustmentEvent e) {  
+           		e.getAdjustable().setValue(e.getAdjustable().getMaximum());  
+        	}
+  		});
+		
 		displayInstructions();
 
 		chatPanel.add(inputField,BorderLayout.CENTER);
 		chatPanel.add(sendButton,BorderLayout.EAST);
-		chatPanel.add(chatArea,BorderLayout.NORTH);
+		chatPanel.add(chatScrollPane,BorderLayout.NORTH);
 		
 		initializeTimerAndPlayerListPanel();
 
