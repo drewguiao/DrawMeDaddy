@@ -34,8 +34,9 @@ public class GameState {
 	public String getScoreList(){
 		String return_val ="";
 		for(Iterator<?> ite = scoreList.keySet().iterator();ite.hasNext();){
-			String name = (Strng)ite.next();
+			String name = (String)ite.next();
 			return_val+= name+" ";
+			System.out.println(return_val);
 		}
 
 		return return_val;

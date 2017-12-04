@@ -91,6 +91,8 @@ public class GameServerThread extends Thread implements Constants{
 
 			if(playerData.startsWith("divideTime")){
 				broadcast("divideTime");
+
+				// BROADCAST SCORE UPDATE
 			}else if(playerData.startsWith("PLAYERCLEAR")){
 				String message = playerData;
 				broadcast(message);
@@ -108,14 +110,14 @@ public class GameServerThread extends Thread implements Constants{
 					color = Color.RED;
 				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=0]")){
 					color = Color.BLACK;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=255]"){
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=0,b=255]")){
 					color = Color.BLUE;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=255,b=0]"){
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=0,g=255,b=0]")){
 					color = Color.GREEN;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=255,b=0]"){
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=255,b=0]")){
 					color = Color.YELLOW;
-				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=255]"){
-					color = Color.MAGENTA
+				}else if(playerInfo[7].trim().equals("java.awt.Color[r=255,g=0,b=255]")){
+					color = Color.MAGENTA;
 				}
 				GamePlayer player = game.getPlayers().get(playerName);
 				
