@@ -181,8 +181,7 @@ public class GameServerThread extends Thread implements Constants{
 		case GAME_END: System.out.println("GAME ENDS!!!!!!!");
 					   
 					   broadcast("FINAL"+this.game.getScoreList());
-
-						break;
+					   gameStatus = WAITING_FOR_PLAYERS;
 						break;
 			}
 		}

@@ -40,7 +40,7 @@ public class GameClient implements Runnable{
 		connectDrawing();
 		start();
 	}
-
+	
 	private void connectChat(){
 		System.out.println("Establishing connection!");
 		try{
@@ -250,7 +250,7 @@ public class GameClient implements Runnable{
 
 		}
 		
-		FinalScore final = new FinalScore(playersScore);
+		FinalScore finale = new FinalScore(playersScore);
 	}
 
 	public void sendGameData(String message){
