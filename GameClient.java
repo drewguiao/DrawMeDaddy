@@ -25,7 +25,7 @@ public class GameClient implements Runnable{
 	private String serverData = null;
 	private boolean gameConnected = false;
 	private DaddyGUI gui;
-	private String wordToGuess;
+	private String wordToGuess="";
 	private String playerName,serverName;
 	private int portNumber;
 	private boolean enableWordHints = true;
@@ -181,14 +181,18 @@ public class GameClient implements Runnable{
 
 	private boolean checkDataToSend(String message){
 		String formalMessage = message.toUpperCase();
-		String formalWordToGuess = wordToGuess.toUpperCase();
+		String formalWordToGuess = "";
+		if(wordToGuess.equals("")){
+			System.out.println("POTA BAKIT KA DI NAGRERETURN");
+			return true;
+		}else{
+			formalWordToGuess = wordToGuess.toUpperCase();
+		}
+
 		if(enableWordHints && !isArtist){
 			if(formalMessage.equals(formalWordToGuess)){
 				message = null;
 				System.out.println("YOU GOT THE WORD! "+wordToGuess);
-				// add score (time = score)
-				// increment round stages
-				// reset: enableWordHints
 				enableWordHints = false;
 				sendGameData("addScore "+playerName+" "+this.gui.getTimer().getRemainingTime());
 				sendGameData("divideTime");
